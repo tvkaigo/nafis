@@ -9,7 +9,7 @@ import ProfileScreen from './components/ProfileScreen';
 import UserEntryModal from './components/UserEntryModal';
 import { AppState, GameConfig, GameResult, Question, Grade, UserStats, UserRole, TeacherProfile } from './types';
 import { generateScienceQuestions } from './services/scienceService';
-import { updateUserStats, auth, subscribeToUserStats, onAuthStateChanged, type User, loadStats } from './services/statsService';
+import { updateUserStats, auth, subscribeToUserStats, onAuthStateChanged, type User } from './services/statsService';
 import { Loader2 } from 'lucide-react';
 
 const App: React.FC = () => {
@@ -66,7 +66,12 @@ const App: React.FC = () => {
     setAppState(AppState.RESULTS);
   };
 
-  if (isAuthChecking) return <div className="min-h-screen flex items-center justify-center bg-emerald-50"><Loader2 className="animate-spin text-emerald-600" size={48} /></div>;
+  if (isAuthChecking) return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-emerald-50 gap-4">
+      <Loader2 className="animate-spin text-emerald-600" size={48} />
+      <p className="text-emerald-900 font-bold animate-pulse text-lg">جاري تحضير معمل العلوم...</p>
+    </div>
+  );
 
   return (
     <div className="min-h-screen text-slate-800 font-sans">
@@ -85,10 +90,12 @@ const App: React.FC = () => {
                     userName={currentUserData?.displayName || ''}
                     currentTotalScore={currentUserData?.totalCorrect || 0}
                     role={currentUserData?.role}
+                    teacherId={(currentUserData as any).teacherId}
                 />
             )}
             {appState === AppState.PROFILE && <ProfileScreen onBack={() => setAppState(AppState.WELCOME)} playerData={currentUserData} userId={currentUser!.uid} />}
             {appState === AppState.LEADERBOARD && <LeaderboardScreen onBack={() => setAppState(AppState.WELCOME)} currentUser={currentUser!.uid} />}
+            {appState === AppState.ANALYTICS && <AnalyticsScreen onBack={() => setAppState(AppState.WELCOME)} playerData={currentUserData} userId={currentUser!.uid} />}
             {appState === AppState.PLAYING && <GameScreen questions={questions} onEndGame={handleEndGame} onExit={() => setAppState(AppState.WELCOME)} isSaving={isSaving} />}
             {appState === AppState.RESULTS && gameResult && (
                 <ResultScreen 
