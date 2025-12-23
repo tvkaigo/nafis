@@ -49,7 +49,9 @@ const App: React.FC = () => {
   const handleStartGame = (config: GameConfig) => {
     setCurrentConfig(config);
     const userGrade = (currentUserData as UserStats)?.grade || Grade.PRI_3;
-    setQuestions(generateScienceQuestions(userGrade, 10));
+    // توليد الأسئلة مع مراعاة ناتج التعلم المختار
+    const gameQuestions = generateScienceQuestions(userGrade, 10, config.learningOutcome);
+    setQuestions(gameQuestions);
     setAppState(AppState.PLAYING);
   };
 
@@ -57,7 +59,6 @@ const App: React.FC = () => {
     setIsSaving(true);
     setGameResult(result);
     
-    // حساب ما إذا كانت النتيجة الحالية تتجاوز الرقم القياسي السابق
     const currentScore = result.score;
     const newRecordAchieved = currentScore > highScore;
     
@@ -68,7 +69,6 @@ const App: React.FC = () => {
 
     if (currentUser && currentUserData) {
         try { 
-          // تحديث الإحصائيات مع تمرير حالة الرقم القياسي الجديد ليتم حفظه في Firestore
           await updateUserStats(result, currentUser.uid, currentUserData.role, newRecordAchieved); 
         } 
         catch (e) { 
@@ -96,7 +96,6 @@ const App: React.FC = () => {
             {appState === AppState.WELCOME && (
                 <WelcomeScreen 
                     onStart={handleStartGame} 
-                    onQuickStart={() => handleStartGame({ grade: (currentUserData as any).grade, subject: 'العلوم' })}
                     onShowAnalytics={() => setAppState(AppState.ANALYTICS)}
                     onShowLeaderboard={() => setAppState(AppState.LEADERBOARD)}
                     onShowProfile={() => setAppState(AppState.PROFILE)}
@@ -115,7 +114,7 @@ const App: React.FC = () => {
             {appState === AppState.RESULTS && gameResult && (
                 <ResultScreen 
                     result={gameResult} 
-                    difficulty={(currentUserData as any).grade}
+                    difficulty={currentConfig?.learningOutcome || (currentUserData as any).grade}
                     onRestart={() => setAppState(AppState.WELCOME)} 
                     isNewHighScore={isNewHighScore}
                     userName={currentUserData?.displayName || ''}

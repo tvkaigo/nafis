@@ -1,4 +1,5 @@
 
+
 export enum Grade {
   PRI_3 = 'الصف الثالث الابتدائي',
   PRI_6 = 'الصف السادس الابتدائي',
@@ -16,6 +17,7 @@ export enum Difficulty {
   EXPERT = 'Expert'
 }
 
+// Added Operation enum to support math operations in services/mathService.ts
 export enum Operation {
   ADDITION = 'Addition',
   SUBTRACTION = 'Subtraction',
@@ -32,6 +34,7 @@ export interface Question {
   category?: string;
   userAnswer?: string;
   isCorrect?: boolean;
+  // Added optional math-specific fields to resolve errors in services/mathService.ts
   num1?: number;
   num2?: number;
   operation?: Operation;
@@ -40,6 +43,7 @@ export interface Question {
 export interface GameConfig {
   grade: Grade;
   subject: string;
+  learningOutcome?: string; // إضافة ناتج التعلم المختار
 }
 
 export interface GameResult {
