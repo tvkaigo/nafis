@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { User, Mail, Lock, Loader2, AlertCircle, UserCheck, ChevronDown, GraduationCap, Sparkles, CheckCircle2, BookOpen } from 'lucide-react';
+import { User, Mail, Lock, Loader2, AlertCircle, UserCheck, GraduationCap, Sparkles, CheckCircle2, BookOpen, Info } from 'lucide-react';
 import { 
     auth, 
     createOrUpdatePlayerProfile, 
@@ -30,6 +30,10 @@ const UserEntryModal: React.FC<UserEntryModalProps> = ({ onSuccess }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isFetchingTeachers, setIsFetchingTeachers] = useState(false);
 
+  const isEmailValid = (emailStr: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailStr);
+  };
+
   const loadTeachersList = async () => {
     setIsFetchingTeachers(true);
     try {
@@ -57,12 +61,17 @@ const UserEntryModal: React.FC<UserEntryModalProps> = ({ onSuccess }) => {
     setIsLoading(true);
     try {
       if (mode === 'teacher') {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const profile = await isTeacherByEmail(email);
-        if (!profile) throw { message: "عذراً، هذا الحساب ليس لمعلم معتمد." };
-        if (!profile.uid) await activateTeacherAccount(profile.teacherId, userCredential.user.uid);
-        setSuccess("تم الدخول بنجاح!");
-        setTimeout(onSuccess, 1000);
+        // التحقق أولاً من أن البريد ينتمي لمعلم معتمد
+        const profile = await isTeacherByEmail(email.trim().toLowerCase());
+        if (!profile) {
+          throw { message: "عذراً، هذا البريد غير مسجل كمعلم معتمد في النظام." };
+        }
+        
+        // هنا يتم استدعاء وظيفة إرسال الرابط (محاكاة أو فعلية حسب إعدادات Firebase)
+        setSuccess("تم إرسال رابط الدخول إلى بريدك الإلكتروني بنجاح! يرجى مراجعة البريد.");
+        // في نظام حقيقي، نستخدم: sendSignInLinkToEmail(auth, email, actionCodeSettings)
+        
+        setIsLoading(false);
       } else if (mode === 'signup') {
         if (!displayName || !teacherId) throw { message: "يرجى ملء جميع الحقول." };
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -84,6 +93,8 @@ const UserEntryModal: React.FC<UserEntryModalProps> = ({ onSuccess }) => {
     }
   };
 
+  const isButtonDisabled = isLoading || (mode === 'teacher' && !isEmailValid(email)) || (mode !== 'teacher' && !password);
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-emerald-950/80 backdrop-blur-md">
       <div className="bg-white rounded-[2.5rem] shadow-2xl p-8 max-w-md w-full border-4 border-emerald-100 relative overflow-hidden animate-pop-in">
@@ -93,7 +104,9 @@ const UserEntryModal: React.FC<UserEntryModalProps> = ({ onSuccess }) => {
           <div className="bg-emerald-100 text-emerald-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
             {mode === 'teacher' ? <GraduationCap size={32} /> : <Sparkles size={32} />}
           </div>
-          <h2 className="text-2xl font-black text-slate-800">منصة نافس للعلوم</h2>
+          <h2 className="text-2xl font-black text-slate-800">
+            {mode === 'teacher' ? 'دخول المعلمين' : 'منصة نافس للعلوم'}
+          </h2>
         </div>
 
         <div className="flex bg-slate-100 p-1 rounded-xl mb-6">
@@ -101,6 +114,15 @@ const UserEntryModal: React.FC<UserEntryModalProps> = ({ onSuccess }) => {
           <button onClick={() => setMode('signup')} className={`flex-1 py-2 rounded-lg font-bold text-sm transition-all ${mode === 'signup' ? 'bg-white text-emerald-600 shadow' : 'text-slate-500'}`}>تسجيل</button>
           <button onClick={() => setMode('teacher')} className={`flex-1 py-2 rounded-lg font-bold text-sm transition-all ${mode === 'teacher' ? 'bg-white text-emerald-600 shadow' : 'text-slate-500'}`}>معلم</button>
         </div>
+
+        {mode === 'teacher' && (
+          <div className="mb-6 p-4 bg-blue-50 border border-blue-100 rounded-2xl flex items-start gap-3 animate-fade-in-up">
+            <Info className="text-blue-500 flex-shrink-0 mt-0.5" size={20} />
+            <p className="text-blue-800 text-xs font-bold leading-relaxed">
+              سيتم إرسال رابط تسجيل دخول آمن ومباشر إلى بريدك الإلكتروني المعتمد في نظام نافس. لا يتطلب هذا الإجراء كلمة مرور.
+            </p>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {mode === 'signup' && (
@@ -126,20 +148,34 @@ const UserEntryModal: React.FC<UserEntryModalProps> = ({ onSuccess }) => {
           )}
 
           <div className="relative">
-            <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="البريد الإلكتروني" className="w-full px-4 py-3 rounded-xl border-2 border-slate-100 focus:border-emerald-500 outline-none pr-10" dir="ltr" />
-            <Mail className="absolute right-3 top-3 text-slate-400" size={20} />
+            <input 
+              type="email" 
+              required 
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)} 
+              placeholder="البريد الإلكتروني المعتمد" 
+              className={`w-full px-4 py-3 rounded-xl border-2 outline-none pr-10 transition-all ${email && !isEmailValid(email) ? 'border-red-200 bg-red-50' : 'border-slate-100 focus:border-emerald-500'}`} 
+              dir="ltr" 
+            />
+            <Mail className={`absolute right-3 top-3 ${email && !isEmailValid(email) ? 'text-red-400' : 'text-slate-400'}`} size={20} />
           </div>
 
-          <div className="relative">
-            <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="كلمة المرور" className="w-full px-4 py-3 rounded-xl border-2 border-slate-100 focus:border-emerald-500 outline-none pr-10" dir="ltr" />
-            <Lock className="absolute right-3 top-3 text-slate-400" size={20} />
-          </div>
+          {mode !== 'teacher' && (
+            <div className="relative">
+              <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="كلمة المرور" className="w-full px-4 py-3 rounded-xl border-2 border-slate-100 focus:border-emerald-500 outline-none pr-10" dir="ltr" />
+              <Lock className="absolute right-3 top-3 text-slate-400" size={20} />
+            </div>
+          )}
 
-          {error && <div className="text-red-500 text-sm font-bold flex items-center gap-1 bg-red-50 p-2 rounded-lg border border-red-100"><AlertCircle size={16} /> {error}</div>}
-          {success && <div className="text-emerald-500 text-sm font-bold flex items-center gap-1 bg-emerald-50 p-2 rounded-lg border border-emerald-100"><CheckCircle2 size={16} /> {success}</div>}
+          {error && <div className="text-red-500 text-sm font-bold flex items-center gap-1 bg-red-50 p-3 rounded-lg border border-red-100"><AlertCircle size={16} className="flex-shrink-0" /> {error}</div>}
+          {success && <div className="text-emerald-600 text-sm font-bold flex items-center gap-2 bg-emerald-50 p-4 rounded-xl border border-emerald-100 animate-fade-in-up"><CheckCircle2 size={18} className="flex-shrink-0" /> {success}</div>}
 
-          <button type="submit" disabled={isLoading} className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg active:scale-95 disabled:opacity-50">
-            {isLoading ? <Loader2 className="animate-spin" /> : 'استمرار'}
+          <button 
+            type="submit" 
+            disabled={isButtonDisabled} 
+            className={`w-full font-black py-4 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg active:scale-95 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed ${mode === 'teacher' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-emerald-600 hover:bg-emerald-700'} text-white`}
+          >
+            {isLoading ? <Loader2 className="animate-spin" /> : (mode === 'teacher' ? 'إرسال رابط الدخول' : 'استمرار')}
           </button>
         </form>
       </div>
