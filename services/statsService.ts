@@ -2,7 +2,6 @@
 import { initializeApp, getApp, getApps } from 'firebase/app';
 import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, orderBy, increment, onSnapshot, where, getDocs, limit, serverTimestamp, DocumentReference, Unsubscribe, FirestoreError, arrayUnion } from 'firebase/firestore';
 import { getAuth, signInWithEmailAndPassword, signOut, User, setPersistence, browserLocalPersistence, updateProfile, signInAnonymously, onAuthStateChanged, createUserWithEmailAndPassword } from 'firebase/auth';
-import { getAnalytics, isSupported } from 'firebase/analytics';
 import { UserStats, GameResult, LeaderboardEntry, Badge, UserRole, TeacherProfile, Grade } from '../types';
 
 const firebaseConfig = {
@@ -18,7 +17,6 @@ const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 
-// Implementation of loadStats to fetch profile data by UID
 export const loadStats = async (uid: string): Promise<UserStats | TeacherProfile | null> => {
     const studentDoc = await getDoc(doc(db, 'Users', uid));
     if (studentDoc.exists()) {
@@ -46,7 +44,7 @@ export const createOrUpdatePlayerProfile = async (uid: string, email: string, di
         teacherId,
         totalCorrect: 0, 
         totalIncorrect: 0, 
-        streak: 0, 
+        streak: 1, 
         bestSession: 0,
         lastActive: new Date().toISOString(), 
         dailyHistory: {},
@@ -61,7 +59,6 @@ export const createOrUpdatePlayerProfile = async (uid: string, email: string, di
     }
 };
 
-// Ensure type User is correctly exported
 export { onAuthStateChanged, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword, updateProfile, type User };
 
 export const fetchAllTeachers = async (): Promise<TeacherProfile[]> => {
@@ -85,17 +82,21 @@ export const subscribeToUserStats = (uid: string, callback: (stats: any) => void
 export const updateUserStats = async (res: GameResult, uid: string, role: string) => {
   const col = role === UserRole.TEACHER ? 'Teachers' : 'Users';
   const ref = doc(db, col, uid);
+  const today = new Date().toISOString().split('T')[0];
+  
   await updateDoc(ref, {
     totalCorrect: increment(res.score),
     totalIncorrect: increment(res.totalQuestions - res.score),
-    lastActive: new Date().toISOString()
+    lastActive: new Date().toISOString(),
+    [`dailyHistory.${today}.correct`]: increment(res.score),
+    [`dailyHistory.${today}.incorrect`]: increment(res.totalQuestions - res.score)
   });
 };
 
 export const getBadgeDefinitions = (total: number): Badge[] => [
-    { id: 1, name: 'مستكشف نبيذ', required: 10, icon: '🔍', unlocked: total >= 10, color: 'text-emerald-600 bg-emerald-100 border-emerald-200' },
-    { id: 2, name: 'باحث صغير', required: 50, icon: '🧪', unlocked: total >= 50, color: 'text-blue-600 bg-blue-100 border-blue-200' },
-    { id: 3, name: 'عالم فلك', required: 100, icon: '🚀', unlocked: total >= 100, color: 'text-purple-600 bg-purple-100 border-purple-200' }
+    { id: 1, name: 'مكتشف مختبر', required: 10, icon: '🔍', unlocked: total >= 10, color: 'text-emerald-600 bg-emerald-100 border-emerald-200' },
+    { id: 2, name: 'باحث عبقري', required: 50, icon: '🧪', unlocked: total >= 50, color: 'text-blue-600 bg-blue-100 border-blue-200' },
+    { id: 3, name: 'رائد فضاء', required: 100, icon: '🚀', unlocked: total >= 100, color: 'text-purple-600 bg-purple-100 border-purple-200' }
 ];
 
 export const isTeacherByEmail = async (email: string) => {
@@ -116,7 +117,23 @@ export const subscribeToLeaderboard = (callback: (data: LeaderboardEntry[]) => v
     });
 };
 
-export const getLast7DaysStatsValue = (p: any) => []; // simplified
+export const getLast7DaysStatsValue = (p: any) => {
+  if (!p || !p.dailyHistory) return [];
+  const days = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+  const result = [];
+  const today = new Date();
+  
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(today.getDate() - i);
+    const dateStr = d.toISOString().split('T')[0];
+    const dayName = days[d.getDay()];
+    const stat = p.dailyHistory[dateStr] || { correct: 0, incorrect: 0 };
+    result.push({ label: dayName, ...stat });
+  }
+  return result;
+};
+
 export const isCloudEnabledValue = () => true;
 
 export const fetchStudentsByTeacherId = async (tid: string) => {

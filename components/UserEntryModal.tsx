@@ -76,7 +76,10 @@ const UserEntryModal: React.FC<UserEntryModalProps> = ({ onSuccess }) => {
         setTimeout(onSuccess, 1000);
       }
     } catch (err: any) {
-      setError(err.message || "حدث خطأ ما");
+      let msg = "حدث خطأ ما";
+      if (err.code === 'auth/wrong-password') msg = "كلمة المرور غير صحيحة";
+      if (err.code === 'auth/user-not-found') msg = "البريد الإلكتروني غير مسجل";
+      setError(err.message || msg);
       setIsLoading(false);
     }
   };
@@ -114,10 +117,10 @@ const UserEntryModal: React.FC<UserEntryModalProps> = ({ onSuccess }) => {
               </div>
               <div className="relative">
                 <select required value={teacherId} onChange={(e) => setTeacherId(e.target.value)} className="w-full px-4 py-3 rounded-xl border-2 border-slate-100 focus:border-emerald-500 outline-none pr-10 appearance-none bg-white">
-                  <option value="">-- اختر المعلم --</option>
+                  <option value="">{isFetchingTeachers ? "جاري جلب قائمة المعلمين..." : "-- اختر المعلم --"}</option>
                   {teachers.map(t => <option key={t.teacherId} value={t.teacherId}>{t.displayName}</option>)}
                 </select>
-                <UserCheck className="absolute right-3 top-3 text-slate-400" size={20} />
+                {isFetchingTeachers ? <Loader2 className="absolute right-3 top-3 text-emerald-500 animate-spin" size={20} /> : <UserCheck className="absolute right-3 top-3 text-slate-400" size={20} />}
               </div>
             </>
           )}
@@ -132,10 +135,10 @@ const UserEntryModal: React.FC<UserEntryModalProps> = ({ onSuccess }) => {
             <Lock className="absolute right-3 top-3 text-slate-400" size={20} />
           </div>
 
-          {error && <div className="text-red-500 text-sm font-bold flex items-center gap-1"><AlertCircle size={16} /> {error}</div>}
-          {success && <div className="text-emerald-500 text-sm font-bold flex items-center gap-1"><CheckCircle2 size={16} /> {success}</div>}
+          {error && <div className="text-red-500 text-sm font-bold flex items-center gap-1 bg-red-50 p-2 rounded-lg border border-red-100"><AlertCircle size={16} /> {error}</div>}
+          {success && <div className="text-emerald-500 text-sm font-bold flex items-center gap-1 bg-emerald-50 p-2 rounded-lg border border-emerald-100"><CheckCircle2 size={16} /> {success}</div>}
 
-          <button type="submit" disabled={isLoading} className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3 rounded-xl transition-all flex items-center justify-center gap-2">
+          <button type="submit" disabled={isLoading} className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg active:scale-95 disabled:opacity-50">
             {isLoading ? <Loader2 className="animate-spin" /> : 'استمرار'}
           </button>
         </form>
