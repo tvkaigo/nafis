@@ -31,8 +31,6 @@ const GameScreen: React.FC<GameScreenProps> = ({ questions, onEndGame, onExit, i
           clearInterval(timer); 
           return 0; 
         }
-        // تشغيل صوت التكتكة كل ثانية
-        // إذا كان الوقت المتبقي أقل من أو يساوي 10 ثوانٍ، نستخدم الصوت الملحّ
         playTick(p <= 11); 
         return p - 1;
       });
@@ -44,7 +42,6 @@ const GameScreen: React.FC<GameScreenProps> = ({ questions, onEndGame, onExit, i
     if (timeLeft === 0 && !isTimeUp) { 
       setIsTimeUp(true); 
       playCompletion(false);
-      // إنهاء اللعبة تلقائياً عند انتهاء الوقت
       const score = history.filter(q => q.isCorrect).length;
       onEndGame({ score, totalQuestions: questions.length, history });
     }
@@ -68,7 +65,6 @@ const GameScreen: React.FC<GameScreenProps> = ({ questions, onEndGame, onExit, i
     const newHistory = [...history, { ...currentQuestion, userAnswer: option, isCorrect }];
     setHistory(newHistory);
 
-    // الانتقال للسؤال التالي بعد ثانية ونصف لرؤية التغذية الراجعة
     setTimeout(() => {
       if (currentIndex >= questions.length - 1) {
         const score = newHistory.filter(q => q.isCorrect).length;
@@ -83,13 +79,8 @@ const GameScreen: React.FC<GameScreenProps> = ({ questions, onEndGame, onExit, i
     }, 1200);
   };
 
-  const handleExitClick = () => {
-    playButtonTap();
-    onExit();
-  };
-
   const formatTime = (s: number) => `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, '0')}`;
-  const progress = ((currentIndex) / questions.length) * 100;
+  const progress = ((currentIndex + 1) / questions.length) * 100;
 
   return (
     <div className="min-h-screen bg-emerald-50 flex flex-col items-center justify-center p-4 relative font-sans overflow-hidden">
@@ -103,7 +94,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ questions, onEndGame, onExit, i
 
       {/* Header Info */}
       <div className="w-full max-w-2xl flex justify-between items-center mb-6 px-4">
-        <button onClick={handleExitClick} className="bg-white p-3 rounded-2xl shadow-sm text-slate-400 hover:text-red-500 transition-all active:scale-90 border border-emerald-50">
+        <button onClick={onExit} className="bg-white p-3 rounded-2xl shadow-sm text-slate-400 hover:text-red-500 transition-all active:scale-90 border border-emerald-50">
           <Home size={24} />
         </button>
         
