@@ -1,0 +1,40 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ✅ مجموعة الطلاب (Users)
+    match /Users/{userId} {
+      // 1. السماح للمستخدم بإنشاء وقراءة وتحديث وثيقته الخاصة
+      // ملاحظة: نستخدم userId للمطابقة مع معرّف المصادقة
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // 2. صلاحية القراءة للآخرين (لوحة الأبطال)
+      allow read: if request.auth != null && (
+        // أ. إذا كان القارئ هو المعلم المرتبط بهذا الطالب
+        (resource.data.teacherId != null && 
+         exists(/databases/$(database)/documents/Teachers/$(resource.data.teacherId)) &&
+         get(/databases/$(database)/documents/Teachers/$(resource.data.teacherId)).data.uid == request.auth.uid)
+        ||
+        // ب. إذا كان القارئ طالباً يشترك مع هذا الطالب في نفس المعلم
+        (resource.data.teacherId != null && 
+         get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.teacherId == resource.data.teacherId)
+      );
+    }
+    
+    // ✅ مجموعة المعلمين (Teachers)
+    match /Teachers/{teacherId} {
+      // القراءة مسموحة للجميع ليتمكن الطلاب من اختيار المعلم عند التسجيل
+      allow read: if true;
+      
+      // التحديث مسموح فقط لربط الحساب أو لصاحب الحساب
+      allow update: if request.auth != null && (
+        !('uid' in resource.data) || 
+        resource.data.uid == null || 
+        resource.data.uid == "" || 
+        resource.data.uid == request.auth.uid
+      );
+      
+      allow create, delete: if false;
+    }
+  }
+}
