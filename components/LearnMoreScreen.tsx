@@ -41,7 +41,8 @@ const LearnMoreScreen: React.FC<LearnMoreScreenProps> = ({ onBack, grade }) => {
   const [direction, setDirection] = useState<'in' | 'out'>('in');
 
   useEffect(() => {
-    setFacts(getEnrichingFacts(grade, 10));
+    // جلب 6 معلومات فقط في كل مرة
+    setFacts(getEnrichingFacts(grade, 6));
   }, [grade]);
 
   const handleNext = () => {
@@ -62,7 +63,8 @@ const LearnMoreScreen: React.FC<LearnMoreScreenProps> = ({ onBack, grade }) => {
   };
 
   const handleRestart = () => {
-    setFacts(getEnrichingFacts(grade, 10));
+    // إعادة جلب 6 معلومات جديدة عند الضغط على استكشاف حقائق جديدة
+    setFacts(getEnrichingFacts(grade, 6));
     setCurrentIndex(0);
     setIsFinished(false);
     setDirection('in');
@@ -160,7 +162,10 @@ const LearnMoreScreen: React.FC<LearnMoreScreenProps> = ({ onBack, grade }) => {
               <div className="w-20 h-1.5 bg-emerald-100 mx-auto rounded-full mb-8"></div>
             </div>
 
-            <div className="bg-emerald-50/40 backdrop-blur-sm rounded-[2.5rem] p-8 md:p-10 border-2 border-dashed border-emerald-100 relative group transition-all hover:bg-emerald-50/60">
+            <div 
+              key={currentIndex}
+              className="bg-emerald-50/40 backdrop-blur-sm rounded-[2.5rem] p-8 md:p-10 border-2 border-dashed border-emerald-100 relative group transition-all hover:bg-emerald-50/60 animate-fade-in-up-zoom"
+            >
               <BookOpen size={28} className="text-emerald-200 absolute -top-4 -right-2 bg-white p-1 rounded-lg shadow-sm group-hover:text-emerald-500 transition-colors" />
               <p className="text-lg md:text-2xl font-bold text-slate-700 leading-relaxed text-right indent-4">
                 {currentFact.description}

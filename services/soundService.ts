@@ -1,3 +1,4 @@
+
 let audioCtx: AudioContext | null = null;
 
 const getContext = () => {
@@ -12,6 +13,44 @@ export const initAudio = () => {
   if (ctx.state === 'suspended') {
     ctx.resume().catch((e) => console.error("Audio resume failed", e));
   }
+};
+
+export const playButtonTap = () => {
+  const ctx = getContext();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(800, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.05);
+
+  gain.gain.setValueAtTime(0.05, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+
+  osc.start();
+  osc.stop(ctx.currentTime + 0.05);
+};
+
+export const playTransition = () => {
+  const ctx = getContext();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(400, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.2);
+
+  gain.gain.setValueAtTime(0.02, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+
+  osc.start();
+  osc.stop(ctx.currentTime + 0.2);
 };
 
 export const playCorrect = () => {
@@ -60,15 +99,16 @@ export const playTick = (isUrgent: boolean = false) => {
   osc.connect(gain);
   gain.connect(ctx.destination);
 
-  osc.type = 'triangle';
-  const freq = isUrgent ? 880 : 440;
-  osc.frequency.setValueAtTime(freq, ctx.currentTime);
+  osc.type = 'sine'; // استخدام sine ليكون الصوت أنعم
+  const freq = isUrgent ? 1200 : 600;
+  const volume = isUrgent ? 0.08 : 0.02; // رفع الصوت قليلاً في وضع الاستعجال
 
-  gain.gain.setValueAtTime(0.05, ctx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+  osc.frequency.setValueAtTime(freq, ctx.currentTime);
+  gain.gain.setValueAtTime(volume, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.05);
 
   osc.start();
-  osc.stop(ctx.currentTime + 0.1);
+  osc.stop(ctx.currentTime + 0.05);
 };
 
 export const playCompletion = (success: boolean) => {
@@ -76,8 +116,7 @@ export const playCompletion = (success: boolean) => {
   const now = ctx.currentTime;
   
   if (success) {
-      // Fanfare (C Major Arpeggio)
-      const notes = [523.25, 659.25, 783.99, 1046.50]; // C E G C
+      const notes = [523.25, 659.25, 783.99, 1046.50];
       notes.forEach((freq, i) => {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
@@ -91,7 +130,6 @@ export const playCompletion = (success: boolean) => {
           osc.stop(now + i * 0.1 + 0.5);
       });
   } else {
-      // Game Over / Time's up sound
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.connect(gain);

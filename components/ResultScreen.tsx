@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { GameResult, getUserDisplayName } from '../types';
-import { RefreshCcw, Star, Trophy, Frown, Sparkles, Award, PartyPopper, TrendingUp } from 'lucide-react';
+import { RefreshCcw, Star, Trophy, Frown, Sparkles, Award, Key } from 'lucide-react';
 import { getAiFeedback } from '../services/geminiService';
 // @ts-ignore
 import confetti from 'canvas-confetti';
@@ -18,6 +18,7 @@ interface ResultScreenProps {
 const ResultScreen: React.FC<ResultScreenProps> = ({ result, difficulty, onRestart, isNewHighScore, userName, totalCumulativeScore }) => {
   const [aiMessage, setAiMessage] = useState<string>('');
   const [loadingAi, setLoadingAi] = useState(false);
+  const [needsKey, setNeedsKey] = useState(false);
   const animationFrameRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -82,10 +83,24 @@ const ResultScreen: React.FC<ResultScreenProps> = ({ result, difficulty, onResta
   }
 
   const handleAiFeedback = async () => {
+    // التحقق مما إذا كان المستخدم بحاجة لاختيار مفتاح API (لبيئات معينة)
+    if (window.aistudio && !(await window.aistudio.hasSelectedApiKey())) {
+      setNeedsKey(true);
+      await window.aistudio.openSelectKey();
+      return;
+    }
+
     setLoadingAi(true);
-    const feedback = await getAiFeedback(result.score, result.history, difficulty);
-    setAiMessage(feedback);
-    setLoadingAi(false);
+    setNeedsKey(false);
+    try {
+      const feedback = await getAiFeedback(result.score, result.history, difficulty);
+      setAiMessage(feedback);
+    } catch (err) {
+      console.error(err);
+      setAiMessage("محاولة رائعة! استمر في التعلم لتصل إلى القمة.");
+    } finally {
+      setLoadingAi(false);
+    }
   };
 
   return (
@@ -109,7 +124,7 @@ const ResultScreen: React.FC<ResultScreenProps> = ({ result, difficulty, onResta
             
             {totalCumulativeScore !== undefined && (
               <div className="mt-4 bg-emerald-50 border border-emerald-100 rounded-2xl p-4 flex items-center justify-center gap-3 animate-fade-in-up">
-                 <div className="bg-emerald-100 p-2 rounded-full text-emerald-600"><TrendingUp size={20} /></div>
+                 <div className="bg-emerald-100 p-2 rounded-full text-emerald-600"><Sparkles size={20} /></div>
                  <div className="text-sm text-emerald-800 font-bold">رصيدك الإجمالي: <span className="text-xl">{totalCumulativeScore}</span> نقطة</div>
               </div>
             )}
@@ -117,21 +132,37 @@ const ResultScreen: React.FC<ResultScreenProps> = ({ result, difficulty, onResta
 
         <div className="space-y-4">
             {!aiMessage && !loadingAi && (
-                <button onClick={handleAiFeedback} className="w-full bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white font-black py-4 px-4 rounded-2xl transition-all shadow-lg flex items-center justify-center gap-2 hover:scale-[1.02]">
+                <button 
+                  onClick={handleAiFeedback} 
+                  className="w-full bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white font-black py-4 px-4 rounded-2xl transition-all shadow-lg flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95"
+                >
                     <Sparkles size={24} /> ماذا يقول المعلم الذكي؟
                 </button>
             )}
 
             {loadingAi && (
-                <div className="p-4 bg-emerald-50 rounded-2xl text-emerald-700 animate-pulse flex items-center justify-center gap-2 font-bold">
-                    <Sparkles className="animate-spin" size={20} /> جاري تحليل أدائك العلمي...
+                <div className="p-4 bg-emerald-50 rounded-2xl text-emerald-700 animate-pulse flex flex-col items-center justify-center gap-2 font-bold border-2 border-emerald-100">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="animate-spin text-emerald-500" size={20} /> 
+                      جاري تحليل الأداء العلمي...
+                    </div>
+                    <span className="text-[10px] text-slate-400">قد يستغرق ذلك بضع ثوانٍ</span>
+                </div>
+            )}
+
+            {needsKey && !loadingAi && !aiMessage && (
+                <div className="p-3 bg-blue-50 text-blue-700 rounded-xl text-xs font-bold flex items-center gap-2 border border-blue-100">
+                  <Key size={16} /> يرجى اختيار مفتاح API لتفعيل التحليل الذكي
                 </div>
             )}
 
             {aiMessage && (
-                <div className="p-6 bg-emerald-50 rounded-[2rem] text-emerald-900 text-right border-2 border-emerald-100 shadow-inner animate-fade-in">
-                    <div className="flex items-center gap-2 mb-2 font-black text-emerald-700"><Sparkles size={20} /> تحليل المعلم:</div>
-                    <p className="leading-relaxed font-bold">{aiMessage}</p>
+                <div className="p-6 bg-emerald-50 rounded-[2rem] text-emerald-900 text-right border-2 border-emerald-100 shadow-inner animate-fade-in relative">
+                    <div className="flex items-center gap-2 mb-2 font-black text-emerald-700">
+                      <Sparkles size={20} className="text-emerald-500" /> 
+                      تحليل المعلم الذكي:
+                    </div>
+                    <p className="leading-relaxed font-bold text-sm md:text-base">{aiMessage}</p>
                 </div>
             )}
 

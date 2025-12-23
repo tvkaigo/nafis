@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Question, GameResult } from '../types';
 import { Timer, Home, Loader2, CheckCircle2, XCircle, FlaskConical } from 'lucide-react';
-import { playCorrect, playIncorrect, playTick, playCompletion } from '../services/soundService';
+import { playCorrect, playIncorrect, playTick, playCompletion, playButtonTap, playTransition } from '../services/soundService';
 
 interface GameScreenProps {
   questions: Question[];
@@ -27,8 +27,13 @@ const GameScreen: React.FC<GameScreenProps> = ({ questions, onEndGame, onExit, i
     if (isSaving || isTimeUp) return;
     const timer = setInterval(() => {
       setTimeLeft(p => {
-        if (p <= 1) { clearInterval(timer); return 0; }
-        if (p <= 10) playTick(true);
+        if (p <= 1) { 
+          clearInterval(timer); 
+          return 0; 
+        }
+        // تشغيل صوت التكتكة كل ثانية
+        // إذا كان الوقت المتبقي أقل من أو يساوي 10 ثوانٍ، نستخدم الصوت الملحّ
+        playTick(p <= 11); 
         return p - 1;
       });
     }, 1000);
@@ -36,7 +41,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ questions, onEndGame, onExit, i
   }, [isSaving, isTimeUp]);
 
   useEffect(() => {
-    if (timeLeft === 0) { 
+    if (timeLeft === 0 && !isTimeUp) { 
       setIsTimeUp(true); 
       playCompletion(false);
       // إنهاء اللعبة تلقائياً عند انتهاء الوقت
@@ -48,6 +53,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ questions, onEndGame, onExit, i
   const handleOptionSelect = (option: string) => {
     if (feedback !== 'none' || isSaving || isTimeUp) return;
     
+    playButtonTap();
     setSelectedOption(option);
     const isCorrect = option === currentQuestion.correctAnswer;
     
@@ -69,11 +75,17 @@ const GameScreen: React.FC<GameScreenProps> = ({ questions, onEndGame, onExit, i
         playCompletion(score >= questions.length * 0.6);
         onEndGame({ score, totalQuestions: questions.length, history: newHistory });
       } else {
+        playTransition();
         setCurrentIndex(p => p + 1);
         setSelectedOption(null);
         setFeedback('none');
       }
     }, 1200);
+  };
+
+  const handleExitClick = () => {
+    playButtonTap();
+    onExit();
   };
 
   const formatTime = (s: number) => `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, '0')}`;
@@ -91,12 +103,12 @@ const GameScreen: React.FC<GameScreenProps> = ({ questions, onEndGame, onExit, i
 
       {/* Header Info */}
       <div className="w-full max-w-2xl flex justify-between items-center mb-6 px-4">
-        <button onClick={onExit} className="bg-white p-3 rounded-2xl shadow-sm text-slate-400 hover:text-red-500 transition-all active:scale-90">
+        <button onClick={handleExitClick} className="bg-white p-3 rounded-2xl shadow-sm text-slate-400 hover:text-red-500 transition-all active:scale-90 border border-emerald-50">
           <Home size={24} />
         </button>
         
         <div className="flex flex-col items-center">
-            <div className={`text-3xl font-black transition-colors ${timeLeft <= 20 ? 'text-red-600 animate-pulse' : 'text-emerald-600'}`}>
+            <div className={`text-3xl font-black transition-colors ${timeLeft <= 10 ? 'text-red-600 animate-pulse scale-110' : 'text-emerald-600'}`}>
               {formatTime(timeLeft)}
             </div>
             <div className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">الوقت المتبقي</div>

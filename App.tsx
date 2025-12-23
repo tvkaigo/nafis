@@ -56,13 +56,26 @@ const App: React.FC = () => {
   const handleEndGame = async (result: GameResult) => {
     setIsSaving(true);
     setGameResult(result);
-    if (result.score > highScore) { setIsNewHighScore(true); setHighScore(result.score); } 
-    else { setIsNewHighScore(false); }
+    
+    // حساب ما إذا كانت النتيجة الحالية تتجاوز الرقم القياسي السابق
+    const currentScore = result.score;
+    const newRecordAchieved = currentScore > highScore;
+    
+    setIsNewHighScore(newRecordAchieved);
+    if (newRecordAchieved) {
+      setHighScore(currentScore);
+    }
 
     if (currentUser && currentUserData) {
-        try { await updateUserStats(result, currentUser.uid, currentUserData.role); } 
-        catch (e) { console.error(e); }
+        try { 
+          // تحديث الإحصائيات مع تمرير حالة الرقم القياسي الجديد ليتم حفظه في Firestore
+          await updateUserStats(result, currentUser.uid, currentUserData.role, newRecordAchieved); 
+        } 
+        catch (e) { 
+          console.error("Error updating user stats in Firestore:", e); 
+        }
     }
+    
     setIsSaving(false);
     setAppState(AppState.RESULTS);
   };

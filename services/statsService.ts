@@ -86,18 +86,24 @@ export const subscribeToUserStats = (uid: string, callback: (stats: any) => void
   });
 };
 
-export const updateUserStats = async (res: GameResult, uid: string, role: string) => {
+export const updateUserStats = async (res: GameResult, uid: string, role: string, isNewHigh: boolean = false) => {
   const col = role === UserRole.TEACHER ? 'Teachers' : 'Users';
   const ref = doc(db, col, uid);
   const today = new Date().toISOString().split('T')[0];
   
-  await updateDoc(ref, {
+  const updates: any = {
     totalCorrect: increment(res.score),
     totalIncorrect: increment(res.totalQuestions - res.score),
     lastActive: new Date().toISOString(),
     [`dailyHistory.${today}.correct`]: increment(res.score),
     [`dailyHistory.${today}.incorrect`]: increment(res.totalQuestions - res.score)
-  });
+  };
+
+  if (isNewHigh) {
+    updates.bestSession = res.score;
+  }
+  
+  await updateDoc(ref, updates);
 };
 
 export const getBadgeDefinitions = (total: number): Badge[] => [
