@@ -1,9 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { Grade, GameConfig, TeacherProfile, UserRole } from '../types';
-import { BookOpen, FlaskConical, Trophy, BarChart3, LogOut, UserCheck, User, Play, Sparkles, Star, Lightbulb, ChevronLeft, LayoutGrid, Microscope, Zap, Globe, Atom } from 'lucide-react';
+import { FlaskConical, Trophy, BarChart3, LogOut, UserCheck, User, Play, Sparkles, Lightbulb, LayoutGrid, Microscope, Zap, Globe, Atom, ClipboardCheck, Activity, Dna, Thermometer } from 'lucide-react';
 import { initAudio } from '../services/soundService';
-import { getBadgeDefinitions, auth, fetchTeacherInfo, signOut } from '../services/statsService';
+import { auth, fetchTeacherInfo, signOut } from '../services/statsService';
 import { getOutcomesByGrade, LearningOutcomes } from '../services/scienceService';
 
 interface WelcomeScreenProps {
@@ -21,10 +21,14 @@ interface WelcomeScreenProps {
 
 const OutcomeIcon = ({ outcome }: { outcome: string }) => {
   switch (outcome) {
-    case LearningOutcomes.LIFE: return <Microscope size={18} />;
-    case LearningOutcomes.PHYSICAL: return <Zap size={18} />;
-    case LearningOutcomes.EARTH_SPACE: return <Globe size={18} />;
-    case LearningOutcomes.CHEMISTRY: return <Atom size={18} />;
+    case LearningOutcomes.LIFE_PRI: return <Microscope size={18} />;
+    case LearningOutcomes.PHYSICAL_PRI: return <Zap size={18} />;
+    case LearningOutcomes.EARTH_SPACE_PRI: return <Globe size={18} />;
+    case LearningOutcomes.THINKING_SKILLS: return <ClipboardCheck size={18} />;
+    case LearningOutcomes.SCIENTIFIC_METHOD: return <Activity size={18} />;
+    case LearningOutcomes.NATURAL_PHENOMENA: return <Thermometer size={18} />;
+    case LearningOutcomes.GENETICS_LIFE: return <Dna size={18} />;
+    case LearningOutcomes.MATTER_ENERGY: return <Atom size={18} />;
     default: return <LayoutGrid size={18} />;
   }
 };
@@ -90,7 +94,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
 
         {/* Learning Outcomes Selection */}
         <div className="mb-8 text-right">
-          <label className="text-xs font-black text-slate-400 mr-2 uppercase tracking-widest mb-3 block">اختر مجال الاختبار (نواتج التعلم):</label>
+          <label className="text-xs font-black text-slate-400 mr-2 uppercase tracking-widest mb-3 block">اختر ناتج التعلم للتركيز عليه:</label>
           <div className="flex flex-wrap justify-end gap-2">
             {availableOutcomes.map((outcome) => (
               <button
