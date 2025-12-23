@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Grade, GameConfig, TeacherProfile, UserRole } from '../types';
-import { FlaskConical, Trophy, BarChart3, LogOut, UserCheck, User, Play, Sparkles, Lightbulb, LayoutGrid, Microscope, Zap, Globe, Atom, ClipboardCheck, Activity, Dna, Thermometer, GraduationCap } from 'lucide-react';
+import { FlaskConical, Trophy, BarChart3, LogOut, UserCheck, User, Play, Sparkles, Lightbulb, LayoutGrid, Microscope, Zap, Globe, Atom, ClipboardCheck, Activity, GraduationCap } from 'lucide-react';
 import { initAudio } from '../services/soundService';
 import { auth, fetchTeacherInfo, signOut } from '../services/statsService';
 import { getOutcomesByGrade, LearningOutcomes } from '../services/scienceService';
@@ -22,14 +22,10 @@ interface WelcomeScreenProps {
 
 const OutcomeIcon = ({ outcome }: { outcome: string }) => {
   switch (outcome) {
-    case LearningOutcomes.LIFE_PRI: return <Microscope size={18} />;
-    case LearningOutcomes.PHYSICAL_PRI: return <Zap size={18} />;
-    case LearningOutcomes.EARTH_SPACE_PRI: return <Globe size={18} />;
+    case LearningOutcomes.LIFE: return <Microscope size={18} />;
+    case LearningOutcomes.PHYSICAL: return <Zap size={18} />;
+    case LearningOutcomes.EARTH_SPACE: return <Globe size={18} />;
     case LearningOutcomes.THINKING_SKILLS: return <ClipboardCheck size={18} />;
-    case LearningOutcomes.SCIENTIFIC_METHOD: return <Activity size={18} />;
-    case LearningOutcomes.NATURAL_PHENOMENA: return <Thermometer size={18} />;
-    case LearningOutcomes.GENETICS_LIFE: return <Dna size={18} />;
-    case LearningOutcomes.MATTER_ENERGY: return <Atom size={18} />;
     default: return <LayoutGrid size={18} />;
   }
 };
@@ -92,13 +88,11 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
         
         <h1 className="text-3xl font-black text-slate-900 mb-2">أهلاً بك، {userName}!</h1>
         
-        {/* عرض صف الطالب بشكل بارز */}
         <div className="inline-flex items-center gap-2 bg-slate-100 text-slate-600 px-5 py-2 rounded-2xl text-sm font-black mb-6 border border-slate-200">
           <GraduationCap size={18} className="text-emerald-600" />
           <span>{grade}</span>
         </div>
 
-        {/* Learning Outcomes Selection */}
         <div className="mb-8 text-right">
           <label className="text-xs font-black text-slate-400 mr-2 uppercase tracking-widest mb-3 block">اختر ناتج التعلم للتركيز عليه:</label>
           <div className="flex flex-wrap justify-end gap-2">
@@ -145,7 +139,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
         )}
       </div>
 
-      {/* Decorative Icons */}
       <div className="absolute bottom-10 left-10 opacity-5 animate-pulse"><Microscope size={120} /></div>
       <div className="absolute top-40 right-10 opacity-5 rotate-12"><Atom size={100} /></div>
     </div>
