@@ -69,12 +69,10 @@ export const fetchTeacherInfo = async (id: string) => {
 };
 
 export const subscribeToUserStats = (uid: string, callback: (stats: any) => void) => {
-  // المحاولة الأولى: التحقق من وجود المستخدم في مجموعة الطلاب
   return onSnapshot(doc(db, 'Users', uid), (snap) => {
     if (snap.exists()) {
       callback({ ...snap.data(), uid: snap.id, badges: getBadgeDefinitions(snap.data().totalCorrect || 0) });
     } else {
-      // المحاولة الثانية: التحقق من وجود المستخدم في مجموعة المعلمين عبر الاستعلام عن UID
       const q = query(collection(db, 'Teachers'), where('uid', '==', uid));
       onSnapshot(q, (teacherSnap) => {
         if (!teacherSnap.empty) {
@@ -103,9 +101,9 @@ export const updateUserStats = async (res: GameResult, uid: string, role: string
 };
 
 export const getBadgeDefinitions = (total: number): Badge[] => [
-    { id: 1, name: 'مكتشف مختبر', required: 10, icon: '🔍', unlocked: total >= 10, color: 'text-emerald-600 bg-emerald-100 border-emerald-200' },
-    { id: 2, name: 'باحث عبقري', required: 50, icon: '🧪', unlocked: total >= 50, color: 'text-blue-600 bg-blue-100 border-blue-200' },
-    { id: 3, name: 'رائد فضاء', required: 100, icon: '🚀', unlocked: total >= 100, color: 'text-purple-600 bg-purple-100 border-purple-200' }
+    { id: 1, name: 'مكتشف مختبر', required: 100, icon: '🔍', unlocked: total >= 100, color: 'text-emerald-600 bg-emerald-100 border-emerald-200' },
+    { id: 2, name: 'باحث عبقري', required: 150, icon: '🧪', unlocked: total >= 150, color: 'text-blue-600 bg-blue-100 border-blue-200' },
+    { id: 3, name: 'رائد فضاء', required: 200, icon: '🚀', unlocked: total >= 200, color: 'text-purple-600 bg-purple-100 border-purple-200' }
 ];
 
 export const isTeacherByEmail = async (email: string) => {
