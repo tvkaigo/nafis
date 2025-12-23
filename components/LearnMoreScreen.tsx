@@ -34,9 +34,9 @@ const LearnMoreScreen: React.FC<LearnMoreScreenProps> = ({ onBack, grade }) => {
 
   if (isFinished) {
     return (
-      <div className="min-h-screen bg-blue-50 flex flex-col items-center justify-center p-6 text-center animate-fade-in">
-        <div className="bg-white rounded-[3rem] shadow-2xl p-10 max-w-md w-full border-4 border-blue-100">
-          <div className="bg-orange-100 text-orange-600 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+      <div className="min-h-screen bg-emerald-50 flex flex-col items-center justify-center p-6 text-center animate-fade-in">
+        <div className="bg-white rounded-[3rem] shadow-2xl p-10 max-w-md w-full border-4 border-emerald-100">
+          <div className="bg-emerald-100 text-emerald-600 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
             <RefreshCcw size={40} className="animate-spin-slow" />
           </div>
           <h2 className="text-3xl font-black text-slate-800 mb-4">انتهت الرحلة مؤقتاً!</h2>
@@ -44,7 +44,7 @@ const LearnMoreScreen: React.FC<LearnMoreScreenProps> = ({ onBack, grade }) => {
             لقد تعلمت 5 أشياء جديدة ومذهلة اليوم. هل تريد استكشاف حقائق أخرى؟
           </p>
           <div className="flex flex-col gap-3">
-            <button onClick={handleRestart} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 active:scale-95">
+            <button onClick={handleRestart} className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 active:scale-95">
               <RefreshCcw size={20} /> تعلم أشياء جديدة
             </button>
             <button onClick={onBack} className="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-black py-4 rounded-2xl transition-all flex items-center justify-center gap-2 active:scale-95">
@@ -57,32 +57,32 @@ const LearnMoreScreen: React.FC<LearnMoreScreenProps> = ({ onBack, grade }) => {
   }
 
   return (
-    <div className="min-h-screen bg-blue-50 flex flex-col items-center justify-center p-4 relative font-sans overflow-hidden">
+    <div className="min-h-screen bg-emerald-50 flex flex-col items-center justify-center p-4 relative font-sans overflow-hidden">
       
       {/* Background Decor */}
       <div className="absolute top-0 right-0 p-10 opacity-10 rotate-12">
-        <Lightbulb size={200} className="text-blue-900" />
+        <Lightbulb size={200} className="text-emerald-900" />
       </div>
 
       <div className="w-full max-w-2xl flex justify-between items-center mb-10 px-4 relative z-10">
-        <button onClick={onBack} className="bg-white p-3 rounded-2xl shadow-sm text-slate-400 hover:text-blue-600 transition-all active:scale-90">
+        <button onClick={onBack} className="bg-white p-3 rounded-2xl shadow-sm text-slate-400 hover:text-emerald-600 transition-all active:scale-90">
           <Home size={24} />
         </button>
         
-        <div className="bg-white px-5 py-2 rounded-2xl shadow-sm border border-blue-100 flex items-center gap-2">
+        <div className="bg-white px-5 py-2 rounded-2xl shadow-sm border border-emerald-100 flex items-center gap-2">
           <span className="text-xs font-bold text-slate-400">معلومة</span>
-          <span className="text-lg font-black text-blue-600">{currentIndex + 1}</span>
+          <span className="text-lg font-black text-emerald-600">{currentIndex + 1}</span>
           <span className="text-xs font-bold text-slate-300">/ {facts.length}</span>
         </div>
       </div>
 
-      <div className="bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl p-8 md:p-12 relative border-b-8 border-blue-100 animate-pop-in min-h-[400px] flex flex-col justify-center text-center">
-        <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-blue-600 text-white p-4 rounded-2xl shadow-lg">
+      <div className="bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl p-8 md:p-12 relative border-b-8 border-emerald-100 animate-pop-in min-h-[400px] flex flex-col justify-center text-center">
+        <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-emerald-600 text-white p-4 rounded-2xl shadow-lg">
           <Sparkles size={32} />
         </div>
 
         <div className="mb-12">
-          <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-1.5 rounded-full text-xs font-black mb-6 border border-blue-100 uppercase tracking-widest">
+          <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-full text-xs font-black mb-6 border border-emerald-100 uppercase tracking-widest">
             <BookOpen size={14} /> هل كنت تعلم؟
           </div>
           <p className="text-2xl md:text-3xl font-black text-slate-800 leading-relaxed animate-fade-in-up" key={currentIndex}>
@@ -92,14 +92,14 @@ const LearnMoreScreen: React.FC<LearnMoreScreenProps> = ({ onBack, grade }) => {
 
         <button
           onClick={handleNext}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white text-xl font-black py-5 rounded-[2rem] shadow-xl shadow-blue-100 flex items-center justify-center gap-3 transition-all hover:scale-[1.02] active:scale-95 group"
+          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xl font-black py-5 rounded-[2rem] shadow-xl shadow-emerald-100 flex items-center justify-center gap-3 transition-all hover:scale-[1.02] active:scale-95 group"
         >
           <span>{currentIndex === facts.length - 1 ? 'إنهاء الجولة' : 'المعلومة التالية'}</span>
           <ChevronLeft size={24} className="group-hover:-translate-x-1 transition-transform" />
         </button>
       </div>
 
-      <div className="mt-8 text-blue-400 font-bold text-sm animate-pulse">
+      <div className="mt-8 text-emerald-400 font-bold text-sm animate-pulse">
         اضغط على الزر لاكتشاف المزيد من أسرار العلم 🔬
       </div>
     </div>
