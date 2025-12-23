@@ -23,10 +23,6 @@ export const loadStats = async (uid: string): Promise<UserStats | TeacherProfile
         const data = studentDoc.data();
         return { ...data, uid: studentDoc.id, badges: getBadgeDefinitions(data.totalCorrect || 0) } as UserStats;
     }
-    const teacherDoc = await getDoc(doc(db, 'Teachers', uid));
-    if (teacherDoc.exists()) {
-        return { ...teacherDoc.data(), teacherId: teacherDoc.id, role: UserRole.TEACHER } as TeacherProfile;
-    }
     const q = query(collection(db, 'Teachers'), where('uid', '==', uid));
     const snap = await getDocs(q);
     if (!snap.empty) {
@@ -73,9 +69,22 @@ export const fetchTeacherInfo = async (id: string) => {
 };
 
 export const subscribeToUserStats = (uid: string, callback: (stats: any) => void) => {
+  // المحاولة الأولى: التحقق من وجود المستخدم في مجموعة الطلاب
   return onSnapshot(doc(db, 'Users', uid), (snap) => {
-    if (snap.exists()) callback({ ...snap.data(), uid: snap.id, badges: getBadgeDefinitions(snap.data().totalCorrect || 0) });
-    else callback(null);
+    if (snap.exists()) {
+      callback({ ...snap.data(), uid: snap.id, badges: getBadgeDefinitions(snap.data().totalCorrect || 0) });
+    } else {
+      // المحاولة الثانية: التحقق من وجود المستخدم في مجموعة المعلمين عبر الاستعلام عن UID
+      const q = query(collection(db, 'Teachers'), where('uid', '==', uid));
+      onSnapshot(q, (teacherSnap) => {
+        if (!teacherSnap.empty) {
+          const d = teacherSnap.docs[0];
+          callback({ ...d.data(), teacherId: d.id, role: UserRole.TEACHER });
+        } else {
+          callback(null);
+        }
+      });
+    }
   });
 };
 
