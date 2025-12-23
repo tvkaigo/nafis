@@ -6,6 +6,7 @@ import ResultScreen from './components/ResultScreen';
 import AnalyticsScreen from './components/AnalyticsScreen';
 import LeaderboardScreen from './components/LeaderboardScreen';
 import ProfileScreen from './components/ProfileScreen';
+import LearnMoreScreen from './components/LearnMoreScreen';
 import UserEntryModal from './components/UserEntryModal';
 import { AppState, GameConfig, GameResult, Question, Grade, UserStats, UserRole, TeacherProfile } from './types';
 import { generateScienceQuestions } from './services/scienceService';
@@ -86,6 +87,7 @@ const App: React.FC = () => {
                     onShowAnalytics={() => setAppState(AppState.ANALYTICS)}
                     onShowLeaderboard={() => setAppState(AppState.LEADERBOARD)}
                     onShowProfile={() => setAppState(AppState.PROFILE)}
+                    onLearnMore={() => setAppState(AppState.LEARN_MORE)}
                     highScore={highScore}
                     userName={currentUserData?.displayName || ''}
                     currentTotalScore={currentUserData?.totalCorrect || 0}
@@ -106,6 +108,12 @@ const App: React.FC = () => {
                     userName={currentUserData?.displayName || ''}
                     totalCumulativeScore={currentUserData?.totalCorrect || 0}
                 />
+            )}
+            {appState === AppState.LEARN_MORE && (
+              <LearnMoreScreen 
+                onBack={() => setAppState(AppState.WELCOME)} 
+                grade={(currentUserData as any).grade || Grade.PRI_3} 
+              />
             )}
         </>
       )}

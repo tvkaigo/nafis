@@ -10,18 +10,12 @@ export enum UserRole {
   TEACHER = 'Teacher'
 }
 
-/**
- * Added Difficulty enum to resolve errors in mathService.ts
- */
 export enum Difficulty {
   BEGINNER = 'Beginner',
   INTERMEDIATE = 'Intermediate',
   EXPERT = 'Expert'
 }
 
-/**
- * Added Operation enum to resolve errors in mathService.ts
- */
 export enum Operation {
   ADDITION = 'Addition',
   SUBTRACTION = 'Subtraction',
@@ -38,9 +32,6 @@ export interface Question {
   category?: string;
   userAnswer?: string;
   isCorrect?: boolean;
-  /**
-   * Added num1, num2, and operation as optional properties to fix type errors in mathService.ts
-   */
   num1?: number;
   num2?: number;
   operation?: Operation;
@@ -63,7 +54,8 @@ export enum AppState {
   RESULTS = 'RESULTS',
   ANALYTICS = 'ANALYTICS',
   LEADERBOARD = 'LEADERBOARD',
-  PROFILE = 'PROFILE'
+  PROFILE = 'PROFILE',
+  LEARN_MORE = 'LEARN_MORE'
 }
 
 export interface DailyStat {
