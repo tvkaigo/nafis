@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Grade, GameConfig, TeacherProfile, UserRole } from '../types';
-import { FlaskConical, Trophy, BarChart3, LogOut, UserCheck, User, Play, Sparkles, Lightbulb, LayoutGrid, Microscope, Zap, Globe, Atom, ClipboardCheck, Activity, Dna, Thermometer } from 'lucide-react';
+import { FlaskConical, Trophy, BarChart3, LogOut, UserCheck, User, Play, Sparkles, Lightbulb, LayoutGrid, Microscope, Zap, Globe, Atom, ClipboardCheck, Activity, Dna, Thermometer, GraduationCap } from 'lucide-react';
 import { initAudio } from '../services/soundService';
 import { auth, fetchTeacherInfo, signOut } from '../services/statsService';
 import { getOutcomesByGrade, LearningOutcomes } from '../services/scienceService';
@@ -14,6 +14,7 @@ interface WelcomeScreenProps {
   onLearnMore: () => void;
   highScore: number;
   userName?: string;
+  grade?: Grade;
   currentTotalScore?: number;
   role?: UserRole;
   teacherId?: string;
@@ -41,14 +42,14 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
     onLearnMore,
     highScore, 
     userName,
+    grade = Grade.PRI_3,
     currentTotalScore = 0,
     role = UserRole.STUDENT,
     teacherId
 }) => {
   const [teacher, setTeacher] = useState<TeacherProfile | null>(null);
   const [selectedOutcome, setSelectedOutcome] = useState<string>(LearningOutcomes.GENERAL);
-  const userGrade = (auth.currentUser as any)?.grade || Grade.PRI_3;
-  const availableOutcomes = getOutcomesByGrade(userGrade);
+  const availableOutcomes = getOutcomesByGrade(grade);
 
   useEffect(() => {
     if (role === UserRole.STUDENT && teacherId) {
@@ -59,7 +60,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   const handleStart = () => {
     initAudio();
     onStart({ 
-      grade: userGrade, 
+      grade: grade, 
       subject: 'العلوم',
       learningOutcome: selectedOutcome 
     });
@@ -89,8 +90,13 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
           <FlaskConical size={40} />
         </div>
         
-        <h1 className="text-3xl font-black text-slate-900 mb-1">أهلاً بك، {userName}!</h1>
-        <p className="text-slate-400 font-bold mb-6 text-sm">{userGrade}</p>
+        <h1 className="text-3xl font-black text-slate-900 mb-2">أهلاً بك، {userName}!</h1>
+        
+        {/* عرض صف الطالب بشكل بارز */}
+        <div className="inline-flex items-center gap-2 bg-slate-100 text-slate-600 px-5 py-2 rounded-2xl text-sm font-black mb-6 border border-slate-200">
+          <GraduationCap size={18} className="text-emerald-600" />
+          <span>{grade}</span>
+        </div>
 
         {/* Learning Outcomes Selection */}
         <div className="mb-8 text-right">

@@ -102,6 +102,7 @@ const App: React.FC = () => {
                     onLearnMore={() => setAppState(AppState.LEARN_MORE)}
                     highScore={highScore}
                     userName={currentUserData?.displayName || ''}
+                    grade={(currentUserData as UserStats)?.grade}
                     currentTotalScore={currentUserData?.totalCorrect || 0}
                     role={currentUserData?.role}
                     teacherId={(currentUserData as any).teacherId}
