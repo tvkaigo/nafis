@@ -4,11 +4,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <title>تحدي نافس الأقوى في الرياضيات</title>
+    <title>نافس للعلوم - باحث المستقبل</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
       :root {
         --sat: env(safe-area-inset-top);
@@ -17,7 +17,7 @@
         --sal: env(safe-area-inset-left);
       }
       body {
-        font-family: 'Tajawal', sans-serif;
+        font-family: 'Cairo', sans-serif;
         background-color: #f8fafc;
         touch-action: manipulation;
         -webkit-tap-highlight-color: transparent;
@@ -37,7 +37,7 @@
         background: #f1f1f1; 
       }
       ::-webkit-scrollbar-thumb {
-        background: #6366f1; 
+        background: #10b981; 
         border-radius: 10px;
       }
       
@@ -49,25 +49,32 @@
         animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
       }
       @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(10px); }
+        from { opacity: 0; transform: translateY(20px); }
         to { opacity: 1; transform: translateY(0); }
       }
       .animate-fade-in-up {
-        animation: fadeInUp 0.4s ease-out forwards;
+        animation: fadeInUp 0.5s ease-out forwards;
       }
-      @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        25% { transform: translateX(-4px); }
-        75% { transform: translateX(4px); }
+      @keyframes staggerIn {
+        from { opacity: 0; transform: translateX(20px); }
+        to { opacity: 1; transform: translateX(0); }
       }
-      .animate-shake {
-        animation: shake 0.2s ease-in-out infinite;
+      .animate-stagger-in {
+        animation: staggerIn 0.4s ease-out forwards;
       }
-      
-      /* تحسين العرض على الشاشات الصغيرة جداً */
-      @media (max-width: 360px) {
-        .text-xs-tiny { font-size: 0.65rem; }
-        .p-tiny { padding: 0.5rem; }
+      @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+      }
+      .animate-float {
+        animation: float 3s ease-in-out infinite;
+      }
+      @keyframes pulse-glow {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+        50% { box-shadow: 0 0 20px 10px rgba(16, 185, 129, 0); }
+      }
+      .animate-glow {
+        animation: pulse-glow 2s infinite;
       }
     </style>
     <script type="importmap">
