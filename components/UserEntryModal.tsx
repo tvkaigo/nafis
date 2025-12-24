@@ -1,5 +1,5 @@
 
-import { AlertCircle, BookOpen, CheckCircle2, GraduationCap, Loader2, Lock, Mail, Sparkles, User, UserCheck } from 'lucide-react';
+import { AlertCircle, BookOpen, CheckCircle2, GraduationCap, Loader2, Lock, Mail, Sparkles, User, UserCheck, Beaker } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { 
     activateTeacherAccount, 
@@ -78,11 +78,11 @@ const UserEntryModal: React.FC<UserEntryModalProps> = ({ onSuccess }) => {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         await updateProfile(userCredential.user, { displayName });
         await createOrUpdatePlayerProfile(userCredential.user.uid, email, displayName, teacherId, grade);
-        setSuccess("أهلاً بك يا بطل الرياضيات!");
+        setSuccess("أهلاً بك يا عالم المستقبل!");
         setTimeout(onSuccess, 800);
       } else {
         await signInWithEmailAndPassword(auth, email, password);
-        setSuccess("أهلاً بعودتك!");
+        setSuccess("أهلاً بعودتك للمختبر!");
         setTimeout(onSuccess, 800);
       }
     } catch (err: any) {
@@ -99,43 +99,43 @@ const UserEntryModal: React.FC<UserEntryModalProps> = ({ onSuccess }) => {
 
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-3 sm:p-4 bg-slate-900/80 backdrop-blur-md overflow-y-auto">
-      <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 max-w-md w-full border-4 border-indigo-50 relative overflow-hidden animate-pop-in my-auto">
-        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 to-purple-500"></div>
+      <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 max-w-md w-full border-4 border-emerald-50 relative overflow-hidden animate-pop-in my-auto">
+        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-emerald-500 to-teal-500"></div>
         
         <div className="text-center mb-6">
-          <div className="bg-indigo-100 text-indigo-600 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3 shadow-inner">
-            {mode === 'teacher' ? <GraduationCap size={28} /> : <Sparkles size={28} />}
+          <div className="bg-emerald-100 text-emerald-600 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3 shadow-inner">
+            {mode === 'teacher' ? <GraduationCap size={28} /> : <Beaker size={28} />}
           </div>
           <h2 className="text-xl sm:text-2xl font-black text-slate-800">
-            {mode === 'teacher' ? 'بوابة المعلمين' : 'نافس الأقوى'}
+            {mode === 'teacher' ? 'بوابة معلمي العلوم' : 'نافس للعلوم'}
           </h2>
         </div>
 
         <div className="flex bg-slate-100 p-1.5 rounded-2xl mb-6 shadow-inner">
-          <button onClick={() => setMode('login')} className={`flex-1 py-2.5 rounded-xl font-bold text-xs transition-all ${mode === 'login' ? 'bg-white text-indigo-600 shadow-md' : 'text-slate-500 hover:text-indigo-400'}`}>دخول</button>
-          <button onClick={() => setMode('signup')} className={`flex-1 py-2.5 rounded-xl font-bold text-xs transition-all ${mode === 'signup' ? 'bg-white text-indigo-600 shadow-md' : 'text-slate-500 hover:text-indigo-400'}`}>تسجيل</button>
-          <button onClick={() => setMode('teacher')} className={`flex-1 py-2.5 rounded-xl font-bold text-xs transition-all ${mode === 'teacher' ? 'bg-white text-indigo-600 shadow-md' : 'text-slate-500 hover:text-indigo-400'}`}>معلم</button>
+          <button onClick={() => setMode('login')} className={`flex-1 py-2.5 rounded-xl font-bold text-xs transition-all ${mode === 'login' ? 'bg-white text-emerald-600 shadow-md' : 'text-slate-500 hover:text-emerald-400'}`}>دخول</button>
+          <button onClick={() => setMode('signup')} className={`flex-1 py-2.5 rounded-xl font-bold text-xs transition-all ${mode === 'signup' ? 'bg-white text-emerald-600 shadow-md' : 'text-slate-500 hover:text-emerald-400'}`}>تسجيل</button>
+          <button onClick={() => setMode('teacher')} className={`flex-1 py-2.5 rounded-xl font-bold text-xs transition-all ${mode === 'teacher' ? 'bg-white text-emerald-600 shadow-md' : 'text-slate-500 hover:text-emerald-400'}`}>معلم</button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {mode === 'signup' && (
             <>
               <div className="relative">
-                <input type="text" required value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="اسم الطالب الثلاثي" className="w-full px-4 py-3.5 rounded-xl border-2 border-slate-100 focus:border-indigo-500 outline-none pr-11 text-sm font-bold" />
+                <input type="text" required value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="اسم الباحث الثلاثي" className="w-full px-4 py-3.5 rounded-xl border-2 border-slate-100 focus:border-emerald-500 outline-none pr-11 text-sm font-bold" />
                 <User className="absolute right-3.5 top-3.5 text-slate-400" size={20} />
               </div>
               <div className="relative">
-                <select value={grade} onChange={(e) => setGrade(e.target.value as Grade)} className="w-full px-4 py-3.5 rounded-xl border-2 border-slate-100 focus:border-indigo-500 outline-none pr-11 appearance-none bg-white font-bold text-sm">
+                <select value={grade} onChange={(e) => setGrade(e.target.value as Grade)} className="w-full px-4 py-3.5 rounded-xl border-2 border-slate-100 focus:border-emerald-500 outline-none pr-11 appearance-none bg-white font-bold text-sm">
                   {Object.values(Grade).map(g => <option key={g} value={g}>{g}</option>)}
                 </select>
                 <BookOpen className="absolute right-3.5 top-3.5 text-slate-400" size={20} />
               </div>
               <div className="relative">
-                <select required value={teacherId} onChange={(e) => setTeacherId(e.target.value)} className="w-full px-4 py-3.5 rounded-xl border-2 border-slate-100 focus:border-indigo-500 outline-none pr-11 appearance-none bg-white text-sm">
-                  <option value="">{isFetchingTeachers ? "جاري التحميل..." : "-- اختر معلم الفصل --"}</option>
+                <select required value={teacherId} onChange={(e) => setTeacherId(e.target.value)} className="w-full px-4 py-3.5 rounded-xl border-2 border-slate-100 focus:border-emerald-500 outline-none pr-11 appearance-none bg-white text-sm">
+                  <option value="">{isFetchingTeachers ? "جاري التحميل..." : "-- اختر معلم العلوم --"}</option>
                   {teachers.map(t => <option key={t.teacherId} value={t.teacherId}>{t.displayName}</option>)}
                 </select>
-                {isFetchingTeachers ? <Loader2 className="absolute right-3.5 top-3.5 text-indigo-500 animate-spin" size={20} /> : <UserCheck className="absolute right-3.5 top-3.5 text-slate-400" size={20} />}
+                {isFetchingTeachers ? <Loader2 className="absolute right-3.5 top-3.5 text-emerald-500 animate-spin" size={20} /> : <UserCheck className="absolute right-3.5 top-3.5 text-slate-400" size={20} />}
               </div>
             </>
           )}
@@ -144,7 +144,7 @@ const UserEntryModal: React.FC<UserEntryModalProps> = ({ onSuccess }) => {
             <input 
               type="email" required value={email} onChange={(e) => setEmail(e.target.value)} 
               placeholder="البريد الإلكتروني" 
-              className="w-full px-4 py-3.5 rounded-xl border-2 border-slate-100 focus:border-indigo-500 outline-none pr-11 text-sm" 
+              className="w-full px-4 py-3.5 rounded-xl border-2 border-slate-100 focus:border-emerald-500 outline-none pr-11 text-sm" 
               dir="ltr" 
             />
             <Mail className="absolute right-3.5 top-3.5 text-slate-400" size={20} />
@@ -154,7 +154,7 @@ const UserEntryModal: React.FC<UserEntryModalProps> = ({ onSuccess }) => {
             <input 
               type="password" required value={password} onChange={(e) => setPassword(e.target.value)} 
               placeholder="كلمة المرور" 
-              className="w-full px-4 py-3.5 rounded-xl border-2 border-slate-100 focus:border-indigo-500 outline-none pr-11 text-sm" 
+              className="w-full px-4 py-3.5 rounded-xl border-2 border-slate-100 focus:border-emerald-500 outline-none pr-11 text-sm" 
               dir="ltr" 
             />
             <Lock className="absolute right-3.5 top-3.5 text-slate-400" size={20} />
@@ -165,9 +165,9 @@ const UserEntryModal: React.FC<UserEntryModalProps> = ({ onSuccess }) => {
 
           <button 
             type="submit" disabled={isButtonDisabled} 
-            className={`w-full font-black py-4 rounded-2xl transition-all flex items-center justify-center gap-2 shadow-lg active:scale-95 disabled:opacity-50 disabled:grayscale ${mode === 'teacher' ? 'bg-purple-600 hover:bg-purple-700' : 'bg-indigo-600 hover:bg-indigo-700'} text-white text-base`}
+            className={`w-full font-black py-4 rounded-2xl transition-all flex items-center justify-center gap-2 shadow-lg active:scale-95 disabled:opacity-50 disabled:grayscale bg-emerald-600 hover:bg-emerald-700 text-white text-base`}
           >
-            {isLoading ? <Loader2 className="animate-spin" /> : 'انطلق الآن'}
+            {isLoading ? <Loader2 className="animate-spin" /> : 'انطلق للمختبر'}
           </button>
         </form>
       </div>

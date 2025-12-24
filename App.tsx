@@ -9,7 +9,7 @@ import ProfileScreen from './components/ProfileScreen';
 import LearnMoreScreen from './components/LearnMoreScreen';
 import UserEntryModal from './components/UserEntryModal';
 import { AppState, GameConfig, GameResult, Question, Grade, UserStats, UserRole, TeacherProfile } from './types';
-import { generateMathQuestions } from './services/mathService';
+import { generateScienceQuestions } from './services/scienceService';
 import { updateUserStats, auth, subscribeToUserStats, onAuthStateChanged, type User } from './services/statsService';
 import { Loader2 } from 'lucide-react';
 
@@ -49,7 +49,8 @@ const App: React.FC = () => {
   const handleStartGame = (config: GameConfig) => {
     setCurrentConfig(config);
     const userGrade = (currentUserData as UserStats)?.grade || Grade.PRI_3;
-    const gameQuestions = generateMathQuestions(userGrade, 10, config.learningOutcome);
+    // توليد أسئلة علوم بدلاً من رياضيات
+    const gameQuestions = generateScienceQuestions(userGrade, 10, config.learningOutcome);
     setQuestions(gameQuestions);
     setAppState(AppState.PLAYING);
   };
@@ -71,9 +72,9 @@ const App: React.FC = () => {
   };
 
   if (isAuthChecking) return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-indigo-50 gap-3">
-      <Loader2 className="animate-spin text-indigo-600" size={32} />
-      <p className="text-indigo-900 font-bold text-sm animate-pulse">جاري تحضير معمل الرياضيات...</p>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-emerald-50 gap-3">
+      <Loader2 className="animate-spin text-emerald-600" size={32} />
+      <p className="text-emerald-900 font-bold text-sm animate-pulse">جاري تحضير المختبر العلمي...</p>
     </div>
   );
 
