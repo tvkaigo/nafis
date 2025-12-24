@@ -49,7 +49,7 @@ const App: React.FC = () => {
   const handleStartGame = (config: GameConfig) => {
     setCurrentConfig(config);
     const userGrade = (currentUserData as UserStats)?.grade || Grade.PRI_3;
-    // توليد أسئلة علوم بدلاً من رياضيات
+    // طلب 10 أسئلة بشكل صريح مع تمرير ناتج التعلم المختار
     const gameQuestions = generateScienceQuestions(userGrade, 10, config.learningOutcome);
     setQuestions(gameQuestions);
     setAppState(AppState.PLAYING);

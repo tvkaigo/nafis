@@ -60,7 +60,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
           <Microscope size={28} />
         </div>
         
-        <h1 className="text-lg sm:text-xl font-black text-slate-900 mb-1 text-center">أهلاً يا باحث {userName}!</h1>
+        <h1 className="text-lg sm:text-xl font-black text-slate-900 mb-1 text-center">أهلاً بالعالم {userName}!</h1>
         <p className="text-[10px] text-slate-400 text-center mb-6 font-bold">{grade}</p>
 
         <div className="mb-6">
