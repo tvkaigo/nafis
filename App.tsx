@@ -9,7 +9,7 @@ import ProfileScreen from './components/ProfileScreen';
 import LearnMoreScreen from './components/LearnMoreScreen';
 import UserEntryModal from './components/UserEntryModal';
 import { AppState, GameConfig, GameResult, Question, Grade, UserStats, UserRole, TeacherProfile } from './types';
-import { generateScienceQuestions } from './services/scienceService';
+import { generateMathQuestions } from './services/mathService';
 import { updateUserStats, auth, subscribeToUserStats, onAuthStateChanged, type User } from './services/statsService';
 import { Loader2 } from 'lucide-react';
 
@@ -49,8 +49,7 @@ const App: React.FC = () => {
   const handleStartGame = (config: GameConfig) => {
     setCurrentConfig(config);
     const userGrade = (currentUserData as UserStats)?.grade || Grade.PRI_3;
-    // توليد الأسئلة مع مراعاة ناتج التعلم المختار
-    const gameQuestions = generateScienceQuestions(userGrade, 10, config.learningOutcome);
+    const gameQuestions = generateMathQuestions(userGrade, 10, config.learningOutcome);
     setQuestions(gameQuestions);
     setAppState(AppState.PLAYING);
   };
@@ -58,32 +57,23 @@ const App: React.FC = () => {
   const handleEndGame = async (result: GameResult) => {
     setIsSaving(true);
     setGameResult(result);
-    
     const currentScore = result.score;
     const newRecordAchieved = currentScore > highScore;
-    
     setIsNewHighScore(newRecordAchieved);
-    if (newRecordAchieved) {
-      setHighScore(currentScore);
-    }
+    if (newRecordAchieved) setHighScore(currentScore);
 
     if (currentUser && currentUserData) {
-        try { 
-          await updateUserStats(result, currentUser.uid, currentUserData.role, newRecordAchieved); 
-        } 
-        catch (e) { 
-          console.error("Error updating user stats in Firestore:", e); 
-        }
+        try { await updateUserStats(result, currentUser.uid, currentUserData.role, newRecordAchieved); } 
+        catch (e) { console.error("Update error:", e); }
     }
-    
     setIsSaving(false);
     setAppState(AppState.RESULTS);
   };
 
   if (isAuthChecking) return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-emerald-50 gap-4">
-      <Loader2 className="animate-spin text-emerald-600" size={48} />
-      <p className="text-emerald-900 font-bold animate-pulse text-lg">جاري تحضير معمل العلوم...</p>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-indigo-50 gap-3">
+      <Loader2 className="animate-spin text-indigo-600" size={32} />
+      <p className="text-indigo-900 font-bold text-sm animate-pulse">جاري تحضير معمل الرياضيات...</p>
     </div>
   );
 
@@ -103,7 +93,6 @@ const App: React.FC = () => {
                     highScore={highScore}
                     userName={currentUserData?.displayName || ''}
                     grade={(currentUserData as UserStats)?.grade}
-                    currentTotalScore={currentUserData?.totalCorrect || 0}
                     role={currentUserData?.role}
                     teacherId={(currentUserData as any).teacherId}
                 />
@@ -123,10 +112,7 @@ const App: React.FC = () => {
                 />
             )}
             {appState === AppState.LEARN_MORE && (
-              <LearnMoreScreen 
-                onBack={() => setAppState(AppState.WELCOME)} 
-                grade={(currentUserData as any).grade || Grade.PRI_3} 
-              />
+              <LearnMoreScreen onBack={() => setAppState(AppState.WELCOME)} grade={(currentUserData as any).grade || Grade.PRI_3} />
             )}
         </>
       )}

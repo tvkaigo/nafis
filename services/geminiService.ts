@@ -3,25 +3,24 @@ import { GoogleGenAI } from "@google/genai";
 import { Question } from "../types";
 
 export const getAiFeedback = async (score: number, history: Question[], grade: string): Promise<string> => {
-  // إنشاء مثيل جديد في كل مرة لضمان استخدام أحدث مفتاح API
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const wrongAnswers = history.filter(q => !q.isCorrect);
   
   const prompt = `
-    أنت خبير في مادة العلوم ومنهج اختبارات "نافس" الوطنية السعودية.
-    قام طالب في مرحلة "${grade}" بإنهاء اختبار علوم تدريبي.
+    أنت خبير في مادة الرياضيات ومنهج اختبارات "نافس" الوطنية السعودية.
+    قام طالب في مرحلة "${grade}" بإنهاء اختبار رياضيات تدريبي.
     النتيجة: ${score} من ${history.length}.
     
     تفاصيل الأخطاء (إن وجدت):
-    ${wrongAnswers.map(q => `- سؤال: ${q.text || 'سؤال علمي'} (الإجابة الصحيحة: ${q.correctAnswer}، إجابة الطالب: ${q.userAnswer})`).join('\n')}
+    ${wrongAnswers.map(q => `- سؤال: ${q.text} (الإجابة الصحيحة: ${q.correctAnswer}، إجابة الطالب: ${q.userAnswer})`).join('\n')}
 
-    المطلوب منك تقديم استجابة قصيرة جداً (لا تتجاوز 3 أسطر) تتضمن:
-    1. رسالة تشجيعية ملهمة بأسلوب عالم علوم.
-    2. نصيحة علمية مركزة بناءً على المفاهيم التي تعثر فيها الطالب.
-    3. إذا كانت النتيجة كاملة، اذكر حقيقة علمية مدهشة ومختصرة.
+    المطلوب منك تقديم استجابة قصيرة (لا تتجاوز 3 أسطر) تتضمن:
+    1. رسالة تشجيعية رياضية (مثل: "يا عبقري الأرقام").
+    2. نصيحة رياضية مركزة بناءً على مفاهيم الأخطاء (مثل: جدول الضرب، ترتيب العمليات، أو قوانين المساحة).
+    3. إذا كانت النتيجة كاملة، اذكر حقيقة رياضية مدهشة (مثل: الرقم الذهبي أو عجائب الرقم ٩).
     
-    اللغة: العربية الفصحى المبسطة.
-    الأسلوب: محفز، دقيق علمياً، وودود.
+    اللغة: العربية الفاصحة المبسطة.
+    الأسلوب: محفز، دقيق رياضياً، وودود.
   `;
 
   try {
@@ -35,21 +34,9 @@ export const getAiFeedback = async (score: number, history: Question[], grade: s
       }
     });
 
-    const feedbackText = response.text;
-    
-    if (!feedbackText) {
-      throw new Error("Empty feedback from model");
-    }
-
-    return feedbackText.trim();
-  } catch (error: any) {
-    console.error("Gemini API Error Detail:", error);
-    
-    // معالجة الأخطاء الشائعة
-    if (error?.message?.includes("API_KEY_INVALID")) {
-      return "خطأ: مفتاح الوصول غير صالح. يرجى إعادة اختيار المفتاح.";
-    }
-    
-    return "محاولة رائعة يا بطل العلوم! استمر في استكشاف المعرفة، فالعلم هو الطريق نحو النجوم. ركز في المرة القادمة على مراجعة مفاهيمك وستصل للعلامة الكاملة.";
+    return response.text?.trim() || "محاولة رائعة! استمر في التدريب لتصبح بطلاً في الرياضيات.";
+  } catch (error) {
+    console.error("Gemini Error:", error);
+    return "أحسنت يا بطل! الرياضيات مهارة تتطور بالتدريب المستمر. راجع خطوات حلك وستصل للقمة.";
   }
 };

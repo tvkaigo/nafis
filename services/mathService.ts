@@ -1,115 +1,65 @@
 
-import { Difficulty, Operation, Question } from '../types';
+import { Grade, Question } from '../types';
 
-const getRandomInt = (min: number, max: number): number => {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+export enum MathDomain {
+  NUMBERS = "الأعداد والعمليات",
+  GEOMETRY = "الهندسة والقياس",
+  ALGEBRA = "الجبر والدوال",
+  DATA = "الإحصاء والاحتمالات",
+  GENERAL = "اختبار شامل"
+}
+
+const shuffleArray = <T>(array: T[]): T[] => {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
 };
 
-// Helper to get a basic operation (excluding MIXED)
-const getRandomBasicOperation = (): Operation => {
-  const operations = [Operation.ADDITION, Operation.SUBTRACTION, Operation.MULTIPLICATION, Operation.DIVISION];
-  return operations[Math.floor(Math.random() * operations.length)];
+const mathBank: Record<Grade, Omit<Question, 'id'>[]> = {
+  [Grade.PRI_3]: [
+    { text: "ما ناتج جمع ٣٤٥ + ١٢٣؟", options: ["٤٦٨", "٥٦٨", "٤٥٨", "٤٦٩"], correctAnswer: "٤٦٨", category: MathDomain.NUMBERS },
+    { text: "أي الأشكال التالية له ٤ أضلاع متساوية و٤ زوايا قائمة؟", options: ["المثلث", "المستطيل", "المربع", "الدائرة"], correctAnswer: "المربع", category: MathDomain.GEOMETRY },
+    { text: "ما هو العدد المفقود في النمط: ٢، ٤، ٦، ....؟", options: ["٧", "٨", "٩", "١٠"], correctAnswer: "٨", category: MathDomain.ALGEBRA },
+    { text: "٥ مجموعات في كل منها ٣ تفاحات، كم عدد التفاح الكلي؟", options: ["٨", "١٥", "١٢", "١٠"], correctAnswer: "١٥", category: MathDomain.NUMBERS },
+    { text: "ما قيمة الرقم ٥ في العدد ٥٧٢؟", options: ["٥", "٥٠", "٥٠٠", "٥٠٠٠"], correctAnswer: "٥٠٠", category: MathDomain.NUMBERS },
+  ],
+  [Grade.PRI_6]: [
+    { text: "ما ناتج ضرب ٠.٥ × ٠.٢؟", options: ["٠.١", "٠.٠١", "١.٠", "٠.٢٥"], correctAnswer: "٠.١", category: MathDomain.NUMBERS },
+    { text: "محيط مربع طول ضلعه ٥ سم يساوي:", options: ["١٠ سم", "٢٠ سم", "٢٥ سم", "١٥ سم"], correctAnswer: "٢٠ سم", category: MathDomain.GEOMETRY },
+    { text: "تبسيط الكسر ١٠/٢٠ هو:", options: ["١/٢", "١/٤", "٢/٣", "١/٥"], correctAnswer: "١/٢", category: MathDomain.NUMBERS },
+    { text: "قيمة س في المعادلة س + ٧ = ١٥ هي:", options: ["٧", "٨", "٩", "٢٢"], correctAnswer: "٨", category: MathDomain.ALGEBRA },
+    { text: "المتوسط الحسابي للأعداد ٢، ٤، ٦ هو:", options: ["٣", "٤", "٥", "١٢"], correctAnswer: "٤", category: MathDomain.DATA },
+  ],
+  [Grade.INT_3]: [
+    { text: "ما ميل المستقيم المار بالنقطتين (٠،٠) و (٢،٤)؟", options: ["٢", "١/٢", "٤", "٠"], correctAnswer: "٢", category: MathDomain.ALGEBRA },
+    { text: "مجموعة حل المعادلة س² = ٢٥ هي:", options: ["٥", "-٥", "{٥، -٥}", "٢٥"], correctAnswer: "{٥، -٥}", category: MathDomain.ALGEBRA },
+    { text: "مثلث قائم الزاوية طول ضلعيه ٣ سم، ٤ سم. ما طول الوتر؟", options: ["٥ سم", "٦ سم", "٧ سم", "٢٥ سم"], correctAnswer: "٥ سم", category: MathDomain.GEOMETRY },
+    { text: "ما احتمال ظهور عدد زوجي عند إلقاء مكعب أرقام مرة واحدة؟", options: ["١/٢", "١/٣", "١/٦", "٢/٣"], correctAnswer: "١/٢", category: MathDomain.DATA },
+    { text: "تبسيط العبارة (٣س) × (٢س) هو:", options: ["٥س", "٦س", "٦س²", "٥س²"], correctAnswer: "٦س²", category: MathDomain.ALGEBRA },
+  ]
 };
 
-export const generateQuestions = (difficulty: Difficulty, operation: Operation, count: number = 10): Question[] => {
-  const questions: Question[] = [];
+export const generateMathQuestions = (grade: Grade, count: number = 10, domain?: string): Question[] => {
+  const fullBank = mathBank[grade] || mathBank[Grade.PRI_3];
+  let pool = domain && domain !== MathDomain.GENERAL 
+    ? fullBank.filter(q => q.category === domain) 
+    : fullBank;
 
-  for (let i = 0; i < count; i++) {
-    let num1 = 0;
-    let num2 = 0;
-    let answer = 0;
-
-    // Determine the operation for this specific question
-    // If the main operation is MIXED, pick a random one for this iteration.
-    // Otherwise, use the selected operation.
-    const currentOperation = operation === Operation.MIXED ? getRandomBasicOperation() : operation;
-
-    switch (difficulty) {
-      case Difficulty.BEGINNER:
-        if (currentOperation === Operation.MULTIPLICATION) {
-          num1 = getRandomInt(1, 9);
-          num2 = getRandomInt(1, 9);
-        } else if (currentOperation === Operation.DIVISION) {
-          num2 = getRandomInt(1, 9);
-          answer = getRandomInt(1, 9);
-          num1 = num2 * answer;
-        } else {
-          num1 = getRandomInt(1, 20);
-          num2 = getRandomInt(1, 10);
-        }
-        break;
-      
-      case Difficulty.INTERMEDIATE:
-        if (currentOperation === Operation.MULTIPLICATION) {
-          num1 = getRandomInt(5, 15);
-          num2 = getRandomInt(2, 12);
-        } else if (currentOperation === Operation.DIVISION) {
-          num2 = getRandomInt(2, 12);
-          answer = getRandomInt(2, 15);
-          num1 = num2 * answer;
-        } else {
-          num1 = getRandomInt(20, 100);
-          num2 = getRandomInt(10, 50);
-        }
-        break;
-
-      case Difficulty.EXPERT:
-        if (currentOperation === Operation.MULTIPLICATION) {
-          num1 = getRandomInt(10, 50);
-          num2 = getRandomInt(5, 20);
-        } else if (currentOperation === Operation.DIVISION) {
-          num2 = getRandomInt(5, 25);
-          answer = getRandomInt(5, 50);
-          num1 = num2 * answer;
-        } else {
-          num1 = getRandomInt(100, 1000);
-          num2 = getRandomInt(50, 500);
-        }
-        break;
-    }
-
-    // Adjust for subtraction to avoid negative numbers
-    if (currentOperation === Operation.SUBTRACTION && num1 < num2) {
-      [num1, num2] = [num2, num1];
-    }
-
-    // Calculate correct answer
-    switch (currentOperation) {
-      case Operation.ADDITION: answer = num1 + num2; break;
-      case Operation.SUBTRACTION: answer = num1 - num2; break;
-      case Operation.MULTIPLICATION: answer = num1 * num2; break;
-      case Operation.DIVISION: answer = num1 / num2; break;
-    }
-
-    // Convert answer to string to match Question interface
-    questions.push({
-      id: i + 1,
-      num1,
-      num2,
-      operation: currentOperation,
-      correctAnswer: String(answer)
-    });
+  if (pool.length < count) {
+    const remaining = fullBank.filter(q => !pool.includes(q));
+    pool = [...pool, ...shuffleArray(remaining)];
   }
 
-  return questions;
+  return shuffleArray(pool).slice(0, count).map((q, i) => ({
+    ...q,
+    id: i + 1,
+    options: shuffleArray(q.options || [])
+  }));
 };
 
-export const getOperationSymbol = (op: Operation): string => {
-  switch (op) {
-    case Operation.ADDITION: return '+';
-    case Operation.SUBTRACTION: return '-';
-    case Operation.MULTIPLICATION: return '×';
-    case Operation.DIVISION: return '÷';
-    case Operation.MIXED: return '?';
-  }
-};
-
-export const getRandomDifficulty = (): Difficulty => {
-  const values = Object.values(Difficulty);
-  return values[Math.floor(Math.random() * values.length)];
-};
-
-export const getRandomOperation = (): Operation => {
-  // Return basic operations only for random selection to avoid recursion if used elsewhere
-  return getRandomBasicOperation();
+export const getMathOutcomes = (grade: Grade): string[] => {
+  return [MathDomain.GENERAL, MathDomain.NUMBERS, MathDomain.GEOMETRY, MathDomain.ALGEBRA, MathDomain.DATA];
 };

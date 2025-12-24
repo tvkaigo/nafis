@@ -3,66 +3,71 @@
 <html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>تحدي نافس الاقوى  في العلوم </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>تحدي نافس الأقوى في الرياضيات</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
+      :root {
+        --sat: env(safe-area-inset-top);
+        --sar: env(safe-area-inset-right);
+        --sab: env(safe-area-inset-bottom);
+        --sal: env(safe-area-inset-left);
+      }
       body {
         font-family: 'Tajawal', sans-serif;
-        background-color: #f3f4f6;
+        background-color: #f8fafc;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        overflow-x: hidden;
+        width: 100%;
+      }
+      #root {
+        width: 100%;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
       }
       ::-webkit-scrollbar {
-        width: 8px;
+        width: 4px;
       }
       ::-webkit-scrollbar-track {
         background: #f1f1f1; 
       }
       ::-webkit-scrollbar-thumb {
-        background: #888; 
-        border-radius: 4px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #555; 
+        background: #6366f1; 
+        border-radius: 10px;
       }
       
       @keyframes popIn {
-        0% { opacity: 0; transform: scale(0.8); }
+        0% { opacity: 0; transform: scale(0.9); }
         100% { opacity: 1; transform: scale(1); }
       }
       .animate-pop-in {
-        animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
       }
       @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(20px); }
+        from { opacity: 0; transform: translateY(10px); }
         to { opacity: 1; transform: translateY(0); }
       }
       .animate-fade-in-up {
-        animation: fadeInUp 0.5s ease-out forwards;
-      }
-      @keyframes fadeInUpZoom {
-        0% { opacity: 0; transform: translateY(15px) scale(0.96); }
-        100% { opacity: 1; transform: translateY(0) scale(1); }
-      }
-      .animate-fade-in-up-zoom {
-        animation: fadeInUpZoom 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      }
-      .animate-spin-slow {
-        animation: spin 3s linear infinite;
-      }
-      @keyframes spin {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
+        animation: fadeInUp 0.4s ease-out forwards;
       }
       @keyframes shake {
         0%, 100% { transform: translateX(0); }
-        25% { transform: translateX(-5px); }
-        75% { transform: translateX(5px); }
+        25% { transform: translateX(-4px); }
+        75% { transform: translateX(4px); }
       }
       .animate-shake {
-        animation: shake 0.3s ease-in-out infinite;
+        animation: shake 0.2s ease-in-out infinite;
+      }
+      
+      /* تحسين العرض على الشاشات الصغيرة جداً */
+      @media (max-width: 360px) {
+        .text-xs-tiny { font-size: 0.65rem; }
+        .p-tiny { padding: 0.5rem; }
       }
     </style>
     <script type="importmap">
@@ -78,8 +83,8 @@
     "firebase/firestore": "https://esm.sh/firebase@11.2.0/firestore",
     "firebase/auth": "https://esm.sh/firebase@11.2.0/auth",
     "firebase/analytics": "https://esm.sh/firebase@11.2.0/analytics",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
     "react/": "https://esm.sh/react@^19.2.3/",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
     "firebase/": "https://esm.sh/firebase@^12.7.0/"
   }
 }
