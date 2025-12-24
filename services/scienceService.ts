@@ -38,16 +38,47 @@ const scienceBank: Record<Grade, Omit<Question, 'id'>[]> = {
     { text: "أي الكواكب هو الأقرب إلى الشمس؟", options: ["المريخ", "عطارد", "الزهرة", "الأرض"], correctAnswer: "عطارد", category: LearningOutcomes.EARTH_SPACE }
   ],
   [Grade.PRI_6]: [
+    // --- علوم الحياة (LIFE) ---
     { text: "ما هي وحدة بناء أجسام الكائنات الحية؟", options: ["النسيج", "العضو", "الخلية", "الجهاز"], correctAnswer: "الخلية", category: LearningOutcomes.LIFE },
     { text: "أي الأجزاء التالية يوجد في الخلية النباتية ولا يوجد في الحيوانية؟", options: ["الغشاء البلازمي", "السيتوبلازم", "الجدار الخلوي", "النواة"], correctAnswer: "الجدار الخلوي", category: LearningOutcomes.LIFE },
     { text: "تنتقل المعلومات الوراثية من الآباء إلى الأبناء عبر:", options: ["البروتينات", "الدهون", "الكروموسومات", "الأملاح"], correctAnswer: "الكروموسومات", category: LearningOutcomes.LIFE },
+    { text: "ما وظيفة الميتوكوندريا في الخلية؟", options: ["صنع البروتين", "إنتاج الطاقة", "التخلص من الفضلات", "تخزين الماء"], correctAnswer: "إنتاج الطاقة", category: LearningOutcomes.LIFE },
+    { text: "أي مما يلي يعد من الثدييات؟", options: ["السمكة", "التمساح", "الحوت", "الضفدع"], correctAnswer: "الحوت", category: LearningOutcomes.LIFE },
+    { text: "أي مما يلي يسبب أمراض جهاز الدوران؟", options: ["التدخين", "استخدام مادة الأسبست", "الجري", "التعرض للأشعة"], correctAnswer: "التدخين", category: LearningOutcomes.LIFE },
+    { text: "أي مما يلي يعد مرضاً غير معدٍ؟", options: ["التيتانوس", "الإنفلونزا", "الملاريا", "السكري"], correctAnswer: "السكري", category: LearningOutcomes.LIFE },
+    { text: "أي مما يلي لا تفرزه الغدد العرقية؟", options: ["الماء", "الدهون", "الفضلات", "الأملاح"], correctAnswer: "الدهون", category: LearningOutcomes.LIFE },
+    { text: "أي الغدد الآتية توجد في العنق؟", options: ["النخامية", "الكظرية", "الدرقية", "البنكرياس"], correctAnswer: "الدرقية", category: LearningOutcomes.LIFE },
+    { text: "أي أجزاء النبات يعمل على تثبيته في التربة؟", options: ["الساق", "الجذر", "الأوراق", "الأزهار"], correctAnswer: "الجذر", category: LearningOutcomes.LIFE },
+    { text: "أي النباتات التالية لها تراكيب تنقل عن طريقها الماء والمواد الأخرى؟", options: ["الوعائية", "اللاوعائية", "الحزازيات", "حشيشة الكبد"], correctAnswer: "الوعائية", category: LearningOutcomes.LIFE },
+    { text: "أي أجزاء الورقة يحدث فيها معظم مراحل عملية البناء الضوئي؟", options: ["البشرة", "الثغور", "الكيوتيكل", "الطبقة العمادية"], correctAnswer: "الطبقة العمادية", category: LearningOutcomes.LIFE },
+    { text: "أي المخلوقات الآتية متعددة الخلايا؟", options: ["البكتيريا", "الأميبا", "الفطريات الدعامية", "الخميرة وحيدة الخلية"], correctAnswer: "الفطريات الدعامية", category: LearningOutcomes.LIFE },
+    { text: "أي أعضاء الجهاز البولي يجتمع فيه البول؟", options: ["الكلية", "المثانة", "الحالب", "الإحليل"], correctAnswer: "المثانة", category: LearningOutcomes.LIFE },
+    { text: "أي الأمراض التالية يسببها فيروس؟", options: ["القرحة", "الملاريا", "السل", "الإنفلونزا"], correctAnswer: "الإنفلونزا", category: LearningOutcomes.LIFE },
+    { text: "أي الممالك الآتية يعيش أفرادها في ظروف قاسية جداً؟", options: ["البدائيات", "الطلائيات", "الفطريات", "الحيوانات"], correctAnswer: "البدائيات", category: LearningOutcomes.LIFE },
+    { text: "أي من المخلوقات التالية تمتاز بأنها ذات تماثل شعاعي؟", options: ["الرخويات", "الديدان الحلقية", "شوكيات الجلد", "المفصليات"], correctAnswer: "شوكيات الجلد", category: LearningOutcomes.LIFE },
+    { text: "الغاز الناتج عن عملية البناء الضوئي هو:", options: ["الهيدروجين", "ثاني أكسيد الكربون", "النيتروجين", "الأكسجين"], correctAnswer: "الأكسجين", category: LearningOutcomes.LIFE },
+    { text: "العملية التي لا تستخدم الأكسجين لإنتاج الطاقة هي:", options: ["التنفس الهوائي", "البناء الضوئي", "التخمر", "الانتشار"], correctAnswer: "التخمر", category: LearningOutcomes.LIFE },
+    { text: "تعد المهارة الفنية للاعب كرة السلة من الصفات:", options: ["الموروثة", "المكتسبة", "المتنحية", "الغريزية"], correctAnswer: "المكتسبة", category: LearningOutcomes.LIFE },
+    { text: "تمثل التراكيب التالية (العظام - الدم - الغضاريف - الدهون):", options: ["خلايا", "أنسجة", "أعضاء", "أجهزة حيوية"], correctAnswer: "أنسجة", category: LearningOutcomes.LIFE },
+    { text: "النسيج الذي ينقل رسائل الجسم هو النسيج:", options: ["الطلائي", "الضام", "العصبي", "العضلي"], correctAnswer: "العصبي", category: LearningOutcomes.LIFE },
+    { text: "تمتص مادة الكلوروفيل الموجودة في البلاستيدات الخضراء الطاقة من:", options: ["الهواء", "الماء", "السكر", "ضوء الشمس"], correctAnswer: "ضوء الشمس", category: LearningOutcomes.LIFE },
+
+    // --- العلوم الفيزيائية (PHYSICAL) ---
     { text: "ما هي الصيغة الكيميائية للماء؟", options: ["CO2", "O2", "H2O", "NaCl"], correctAnswer: "H2O", category: LearningOutcomes.PHYSICAL },
+    { text: "قوة تجاذب بين جسمين تعتمد على الكتلة والمسافة:", options: ["الاحتكاك", "الجاذبية", "المغناطيسية", "الكهرباء"], correctAnswer: "الجاذبية", category: LearningOutcomes.PHYSICAL },
+    { text: "عملية تحول السائل إلى غاز تسمى:", options: ["الانصهار", "التكثف", "التبخر", "التجمد"], correctAnswer: "التبخر", category: LearningOutcomes.PHYSICAL },
+    { text: "تتكون البروتينات من الهيدروجين والأكسجين والكربون والنيتروجين، لذا تصنف بأنها:", options: ["ذرة", "عنصر", "مركب", "مخلوط"], correctAnswer: "مركب", category: LearningOutcomes.PHYSICAL },
+    { text: "عند هبوط المظلي من الطائرة فإن سرعته تقل بسبب:", options: ["اقترابه من الأرض", "نقصان كتلته", "مقاومة الهواء", "قوة الجاذبية"], correctAnswer: "مقاومة الهواء", category: LearningOutcomes.PHYSICAL },
+    { text: "رمى خالد الكرة مسافة ٣م وكان الشغل المبذول ١٢ جولاً، فما مقدار القوة المبذولة؟", options: ["٤ نيوتن", "٩ نيوتن", "١٥ نيوتن", "٢٦ نيوتن"], correctAnswer: "٤ نيوتن", category: LearningOutcomes.PHYSICAL },
+
+    // --- علوم الأرض والفضاء (EARTH_SPACE) ---
     { text: "أكبر كواكب المجموعة الشمسية حجماً هو:", options: ["زحل", "المشتري", "نبتون", "الأرض"], correctAnswer: "المشتري", category: LearningOutcomes.EARTH_SPACE },
     { text: "تسمى حركة صفائح القشرة الأرضية التي تسبب اهتزازات بـ:", options: ["البراكين", "الزلازل", "الأعاصير", "الفيضانات"], correctAnswer: "الزلازل", category: LearningOutcomes.EARTH_SPACE },
     { text: "ما الغاز الأكثر توافراً في الغلاف الجوي؟", options: ["الأكسجين", "النيتروجين", "الهيدروجين", "ثاني أكسيد الكربون"], correctAnswer: "النيتروجين", category: LearningOutcomes.EARTH_SPACE },
-    { text: "قوة تجاذب بين جسمين تعتمد على الكتلة والمسافة:", options: ["الاحتكاك", "الجاذبية", "المغناطيسية", "الكهرباء"], correctAnswer: "الجاذبية", category: LearningOutcomes.PHYSICAL },
-    { text: "عملية تحول السائل إلى غاز تسمى:", options: ["الانصهار", "التكثف", "التبخر", "التجمد"], correctAnswer: "التبخر", category: LearningOutcomes.PHYSICAL },
-    { text: "ما وظيفة الميتوكوندريا في الخلية؟", options: ["صنع البروتين", "إنتاج الطاقة", "التخلص من الفضلات", "تخزين الماء"], correctAnswer: "إنتاج الطاقة", category: LearningOutcomes.LIFE }
+    { text: "أي مما يلي يسهم في تحلل الأوزون؟", options: ["ثاني أكسيد الكربون", "الرادون", "الكلوروفلوروكربون", "أول أكسيد الكربون"], correctAnswer: "الكلوروفلوروكربون", category: LearningOutcomes.EARTH_SPACE },
+    { text: "لو لم تكن هناك ظاهرة الاحتباس الحراري، فما هي النتيجة المتوقعة؟", options: ["سطح الأرض أكثر سخونة", "سطح الأرض أكثر برودة", "درجة حرارة الأرض متساوية", "انصهار الجليد"], correctAnswer: "سطح الأرض أكثر برودة", category: LearningOutcomes.EARTH_SPACE },
+    { text: "ماذا تسمى الصخور المنصهرة التي تتدفق على سطح الأرض؟", options: ["الحمم", "اللابة", "الصدع", "التحلل"], correctAnswer: "اللابة", category: LearningOutcomes.EARTH_SPACE },
+    { text: "يعد القطن من الموارد المتجددة لأنه:", options: ["ينمو بكميات كبيرة", "يحصد كل عام", "يصنع صناعياً", "لا يحتاج للشمس"], correctAnswer: "يحصد كل عام", category: LearningOutcomes.EARTH_SPACE }
   ],
   [Grade.INT_3]: [
     // --- علوم الحياة (LIFE) ---
@@ -71,7 +102,7 @@ const scienceBank: Record<Grade, Omit<Question, 'id'>[]> = {
     { text: "أين تحدث عملية الإخصاب؟", options: ["قناة البيض", "المهبل", "المبيض", "الرحم"], correctAnswer: "قناة البيض", category: LearningOutcomes.LIFE },
     { text: "ما المادة الكيميائية التي تفرزها الغدد الصماء؟", options: ["الإنزيم", "الهرمون", "الحمض", "اللعاب"], correctAnswer: "الهرمون", category: LearningOutcomes.LIFE },
     { text: "أين ينمو الجنين ويتطور؟", options: ["الرحم", "قناة البيض", "المبيض", "المهبل"], correctAnswer: "الرحم", category: LearningOutcomes.LIFE },
-    { text: "ماذا يسمى اتحاد البويضة والحيوان المنوي؟", options: ["الإخصاب", "دورة الحيض", "الانقسام المنصف", "التبويض"], correctAnswer: "الإخصاب", category: LearningOutcomes.LIFE },
+    { text: "ماذا يسمى اتحاد البويضة والحيوان المنوي؟", options: ["الإخصاب", "دورة الحيض", "الانقسام المنصف", "التبويض"], correctAnswer: "الأخصاب", category: LearningOutcomes.LIFE },
     { text: "في أي مرحلة يتكون الغشاء الرهلي؟", options: ["البويضة المخصبة", "المرحلة الجنينية المتأخرة", "المرحلة الجنينية الأولى", "حديث الولادة"], correctAnswer: "المرحلة الجنينية الأولى", category: LearningOutcomes.LIFE },
     { text: "إحدى الغدد الآتية ليست غدة صماء:", options: ["اللعابية", "النخامية", "الزعترية", "الصنوبرية"], correctAnswer: "اللعابية", category: LearningOutcomes.LIFE },
     { text: "أي العبارات التالية غير صحيحة فيما يتعلق بالتوائم المتماثلة؟", options: ["ينتجان عن بويضة واحدة", "يحتويان على المادة الوراثية نفسها", "قد يختلفان في الجنس", "لهما الصفات نفسها"], correctAnswer: "قد يختلفان في الجنس", category: LearningOutcomes.LIFE },
